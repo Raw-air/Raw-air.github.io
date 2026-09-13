@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Raw Air — 把想法，做成看得見的東西</title>
+<meta name="description" content="接案開發：網站、App 修復與上架、Discord 機器人、自動化系統。你講需求，我先畫概念圖給你看，再談怎麼做。價格另談。">
+<meta property="og:title" content="Raw Air — 把想法，做成看得見的東西">
+<meta property="og:description" content="接案開發：網站、App 修復、機器人、自動化。先畫給你看，再談怎麼做。">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://raw-air.github.io/">
+<meta property="og:image" content="https://raw-air.github.io/og.png">
+<meta name="theme-color" content="#0a0a0c">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230a0a0c'/%3E%3Ccircle cx='32' cy='32' r='14' fill='%23ff6b35'/%3E%3Ccircle cx='44' cy='20' r='6' fill='%237c5cff'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700;900&family=Noto+Sans+TC:wght@300;400;500;700&family=Instrument+Serif:ital@0;1&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- 載入畫面 -->
+<div class="loader" id="loader" aria-hidden="true">
+  <div class="loader__inner">
+    <div class="loader__brand"><span class="dot"></span>RAW AIR</div>
+    <div class="loader__count"><span id="loaderNum">0</span><i>%</i></div>
+    <div class="loader__bar"><span id="loaderBar"></span></div>
+    <div class="loader__hint">正在把想法變成畫面</div>
+  </div>
+  <div class="loader__panel"></div>
+  <div class="loader__panel"></div>
+  <div class="loader__panel"></div>
+</div>
+
+<!-- 自訂游標 -->
+<div class="cursor" id="cursor"><span class="cursor__dot"></span><span class="cursor__ring"><b class="cursor__label"></b></span></div>
+
+<!-- 顆粒質感 -->
+<svg class="grain" aria-hidden="true"><filter id="grainF"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="3" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/></filter><rect width="100%" height="100%" filter="url(#grainF)"/></svg>
+
+<!-- 導覽 -->
+<header class="nav" id="nav">
+  <a class="nav__logo" href="#top" data-magnetic><span class="dot"></span>RAW AIR</a>
+  <nav class="nav__links" aria-label="主要">
+    <a href="#works" data-magnetic>作品</a>
+    <a href="#concept" data-magnetic>概念圖</a>
+    <a href="#services" data-magnetic>能做的事</a>
+    <a href="#process" data-magnetic>流程</a>
+    <a href="#pricing" data-magnetic>價格</a>
+  </nav>
+  <div class="nav__right">
+    <span class="nav__clock"><i>TPE</i> <b id="clock">--:--</b></span>
+    <a class="btn btn--sm" href="#contact" data-magnetic>聊聊想法</a>
+    <button class="nav__burger" id="burger" aria-label="開啟選單" aria-expanded="false"><span></span><span></span></button>
+  </div>
+</header>
+
+<div class="menu" id="menu" aria-hidden="true">
+  <div class="menu__bg"></div>
+  <div class="menu__inner">
+    <div class="menu__links">
+      <a href="#works"><em>01</em>作品</a>
+      <a href="#concept"><em>02</em>概念圖</a>
+      <a href="#services"><em>03</em>能做的事</a>
+      <a href="#process"><em>04</em>流程</a>
+      <a href="#pricing"><em>05</em>價格</a>
+      <a href="#contact"><em>06</em>聯絡</a>
+    </div>
+    <div class="menu__foot">
+      <span>台北 · 接案中</span>
+      <a href="https://github.com/Raw-air" target="_blank" rel="noopener">GitHub ↗</a>
+    </div>
+  </div>
+</div>
+
+<main id="top">
+
+<!-- ===== HERO ===== -->
+<section class="hero" id="hero">
+  <canvas class="hero__gl" id="gl" aria-hidden="true"></canvas>
+  <div class="hero__fade" aria-hidden="true"></div>
+  <div class="hero__inner">
+    <p class="hero__eyebrow reveal"><span class="status"></span>接案開發 · Freelance Developer · 台北</p>
+    <h1 class="hero__title">
+      <span class="line" data-split>把想法，</span>
+      <span class="line" data-split>做成<em>看得見</em>的東西。</span>
+    </h1>
+    <p class="hero__sub reveal">網站、App 修復與上架、Discord 機器人、自動化系統。<br>你講需求，我先畫概念圖給你看，再談怎麼做。</p>
+    <div class="hero__cta reveal">
+      <a class="btn btn--primary" href="#works" data-magnetic>看作品<svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      <a class="btn btn--ghost" href="#concept" data-magnetic>先看你的想法長怎樣</a>
+    </div>
+  </div>
+  <div class="hero__bottom">
+    <div class="hero__scroll"><span></span>往下捲</div>
+    <div class="hero__meta"><b>04</b> 個作品 · <b>06</b> 種服務 · 價格另談</div>
+  </div>
+</section>
+
+<!-- ===== 跑馬燈 ===== -->
+<div class="marquee" aria-hidden="true">
+  <div class="marquee__track" data-dir="1">
+    <span>網站設計</span><i>✦</i><span>iOS App 修復</span><i>✦</i><span>Discord 機器人</span><i>✦</i><span>進銷存系統</span><i>✦</i><span>資料儀表板</span><i>✦</i><span>自動化流程</span><i>✦</i><span>概念圖</span><i>✦</i><span>原型設計</span><i>✦</i>
+    <span>網站設計</span><i>✦</i><span>iOS App 修復</span><i>✦</i><span>Discord 機器人</span><i>✦</i><span>進銷存系統</span><i>✦</i><span>資料儀表板</span><i>✦</i><span>自動化流程</span><i>✦</i><span>概念圖</span><i>✦</i><span>原型設計</span><i>✦</i>
+  </div>
+</div>
+
+<!-- ===== 宣言 ===== -->
+<section class="manifesto">
+  <p class="manifesto__text" data-words>很多人有想法，但講不清楚要做什麼。所以我做的第一件事不是報價，是把你腦中的畫面畫出來——一張概念圖、一個可以點的原型。你看到它長什麼樣，再決定要不要做、做多少。</p>
+  <div class="manifesto__stats reveal">
+    <div><b data-count="4">0</b><span>個交付案</span></div>
+    <div><b data-count="1985">0</b><span>家上市櫃公司資料接入</span></div>
+    <div><b data-count="0">0</b><span>個編譯錯誤交付</span></div>
+  </div>
+</section>
+
+<!-- ===== 作品 ===== -->
+<section class="works" id="works">
+  <div class="sec-head">
+    <span class="sec-head__num">01</span>
+    <h2 class="sec-head__title" data-split>作品</h2>
+    <span class="sec-head__en">Selected Works</span>
+  </div>
+
+  <!-- 作品 1 -->
+  <article class="work" data-cursor="看看">
+    <div class="work__text">
+      <span class="work__idx">01 / 04</span>
+      <h3 class="work__title">果商進銷管理系統</h3>
+      <p class="work__desc">一個 HTML 檔就是整套系統。果農週結、代售單、籃子庫存、月成本報表，開瀏覽器就能用，不裝軟體、不用網路。舊 Excel 算錯的那格，系統自己會抓出來。</p>
+      <ul class="work__tags"><li>單檔網頁應用</li><li>圖表</li><li>列印單據</li><li>離線可用</li></ul>
+      <div class="work__links">
+        <a class="link-arrow" href="https://raw-air.github.io/guoshang-demo/" target="_blank" rel="noopener">試用版（需金鑰）<svg viewBox="0 0 24 24"><path d="M7 17L17 7M8 7h9v9"/></svg></a>
+      </div>
+    </div>
+    <div class="work__visual" data-parallax="-6">
+      <div class="mk mk-dash">
+        <div class="mk-dash__side"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        <div class="mk-dash__main">
+          <div class="mk-dash__top"><span>總覽</span><em>本週 <b>本月</b></em></div>
+          <div class="mk-dash__hero">
+            <small>本月淨利</small>
+            <strong>+<span data-count="128540" data-count-play>0</span></strong>
+            <svg class="mk-dash__donut" viewBox="0 0 80 80"><circle cx="40" cy="40" r="30" class="d0"/><circle cx="40" cy="40" r="30" class="d1"/><circle cx="40" cy="40" r="30" class="d2"/><circle cx="40" cy="40" r="30" class="d3"/><text x="40" y="44">31%</text></svg>
+          </div>
+          <div class="mk-dash__bars"><i style="--h:40%"></i><i style="--h:55%"></i><i style="--h:35%"></i><i style="--h:70%"></i><i style="--h:60%"></i><i style="--h:85%"></i><i style="--h:65%"></i><i style="--h:95%"></i></div>
+          <div class="mk-dash__cells"><span>收貨 <b>12,480 斤</b></span><span>均價 <b>18.6 元</b></span><span>毛利率 <b>31%</b></span><span>週數 <b>3</b></span></div>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <!-- 作品 2 -->
+  <article class="work work--rev" data-cursor="看看">
+    <div class="work__text">
+      <span class="work__idx">02 / 04</span>
+      <h3 class="work__title">es省電王 iOS App 修復與上架</h3>
+      <p class="work__desc">客戶的 App 錄影後相機打不開、付款頁不見、整包程式編譯不過。找出根因、加上相機自動恢復、對齊訂閱商品、修好上架設定，最後在雲端 Mac 上實際編譯：0 錯誤、0 警告。</p>
+      <ul class="work__tags"><li>Swift / AVFoundation</li><li>StoreKit 訂閱</li><li>GitHub Actions</li><li>App Store 上架</li></ul>
+    </div>
+    <div class="work__visual" data-parallax="6">
+      <div class="mk mk-phone">
+        <div class="mk-phone__frame">
+          <div class="mk-phone__notch"></div>
+          <div class="mk-phone__screen">
+            <div class="mk-phone__rec"><i></i>REC <b>00:12</b></div>
+            <div class="mk-phone__grid"></div>
+            <div class="mk-phone__person"><svg viewBox="0 0 60 120"><circle cx="30" cy="20" r="12"/><path d="M12 60c0-14 8-24 18-24s18 10 18 24v50H12z"/></svg><span class="box"></span></div>
+            <div class="mk-phone__toast">相機已自動恢復</div>
+            <div class="mk-phone__sub"><span>月 NT$299</span><b>年 NT$890 · 省 75%</b></div>
+          </div>
+        </div>
+        <div class="mk-phone__term"><span class="p">$</span> xcodebuild … <br><span class="ok">** BUILD SUCCEEDED **</span> <em>0 errors · 0 warnings</em></div>
+      </div>
+    </div>
+  </article>
+
+  <!-- 作品 3 -->
+  <article class="work" data-cursor="看看">
+    <div class="work__text">
+      <span class="work__idx">03 / 04</span>
+      <h3 class="work__title">台股禿鷹：多 AI 調查系統</h3>
+      <p class="work__desc">在 Discord 打一個股票代號，AI 花 30 天把那間公司挖到見骨，另一個 AI 負責查核，最後產出精華報表、轉入即時追蹤。接了證交所與櫃買中心 1,985 家公司資料，每小時快照、異常偵測。只出情報，不碰下單。</p>
+      <ul class="work__tags"><li>Discord Bot</li><li>TypeScript</li><li>多 Agent 協作</li><li>台股資料層</li></ul>
+    </div>
+    <div class="work__visual" data-parallax="-6">
+      <div class="mk mk-chat">
+        <div class="mk-chat__side"><b># 點單</b><span># 進度</span><span># 報表</span><span># 追蹤</span></div>
+        <div class="mk-chat__main">
+          <div class="msg msg--u"><i></i><div><b>oscar</b><p>/調查 2330</p></div></div>
+          <div class="msg msg--b"><i></i><div><b>台股禿鷹 <small>BOT</small></b><p>收到。台積電，開始 30 天深挖。</p><div class="prog"><span></span></div><p class="dim">第 1 層 · 財報與法說 …</p></div></div>
+          <div class="msg msg--b"><i></i><div><b>台股禿鷹 <small>BOT</small></b><div class="embed"><b>線索 #3</b><p>資本支出年增 42%，與法說口徑不一致，交給審查員複核。</p></div></div></div>
+          <div class="msg msg--b"><i></i><div><b>審查員 <small>BOT</small></b><p>已交叉比對兩份年報。<em>通過。</em></p></div></div>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <!-- 作品 4 -->
+  <article class="work work--rev" data-cursor="看看">
+    <div class="work__text">
+      <span class="work__idx">04 / 04</span>
+      <h3 class="work__title">付款前安全試用交付</h3>
+      <p class="work__desc">怕交貨不付錢？我把完整系統加密後放上網，客戶拿金鑰就能完整試用，畫面帶「試用版」浮水印。確認功能沒問題再付款、再拿原始檔。要停權，換一把金鑰就好。</p>
+      <ul class="work__tags"><li>AES-GCM 加密</li><li>GitHub Pages</li><li>金鑰入口</li><li>浮水印</li></ul>
+    </div>
+    <div class="work__visual" data-parallax="6">
+      <div class="mk mk-gate">
+        <div class="mk-gate__lock">
+          <svg viewBox="0 0 24 24"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+          <div class="mk-gate__input"><span class="dots"><i></i><i></i><i></i><i></i><i></i><i></i></span><b>進入</b></div>
+          <small>輸入試用金鑰</small>
+        </div>
+        <div class="mk-gate__app">
+          <div class="wm">DEMO 試用版</div>
+          <div class="row"><i></i><i></i><i></i></div>
+          <div class="row big"><i></i></div>
+          <div class="row"><i></i><i></i></div>
+          <div class="row"><i></i><i></i><i></i><i></i></div>
+          <div class="row"><i></i><i></i></div>
+        </div>
+      </div>
+    </div>
+  </article>
+</section>
+
+<!-- ===== 概念圖實驗室 ===== -->
+<section class="concept" id="concept">
+  <div class="sec-head">
+    <span class="sec-head__num">02</span>
+    <h2 class="sec-head__title" data-split>你講一句話，我畫成這樣</h2>
+    <span class="sec-head__en">Concept Lab</span>
+  </div>
+  <p class="concept__lead reveal">點一個想法試試。這就是我們第一次聊完之後，你會收到的東西：先是線稿，再是有顏色的畫面，旁邊是我會問你的問題。</p>
+  <div class="concept__grid">
+    <div class="concept__ideas" role="tablist" aria-label="想法">
+      <button class="idea is-active" role="tab" data-idea="0" aria-selected="true"><span>「我想要一個記帳 App」</span></button>
+      <button class="idea" role="tab" data-idea="1"><span>「幫我做社團的 Discord 機器人」</span></button>
+      <button class="idea" role="tab" data-idea="2"><span>「我要一個品牌形象網站」</span></button>
+      <button class="idea" role="tab" data-idea="3"><span>「幫我把 Excel 變成系統」</span></button>
+      <div class="concept__notes">
+        <span class="concept__notes-head">需求筆記</span>
+        <ul id="notes"></ul>
+      </div>
+    </div>
+    <div class="concept__stage" id="stage">
+      <div class="concept__phase"><span id="phaseLabel">線稿</span><i></i></div>
+      <div class="concept__canvas" id="canvas"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 能做的事 ===== -->
+<section class="services" id="services">
+  <div class="sec-head">
+    <span class="sec-head__num">03</span>
+    <h2 class="sec-head__title" data-split>能做的事</h2>
+    <span class="sec-head__en">Services</span>
+  </div>
+  <div class="bento">
+    <div class="tile tile--wide" data-tilt>
+      <svg class="tile__icon" viewBox="0 0 48 48"><rect x="6" y="10" width="36" height="26" rx="4"/><path d="M6 18h36M14 14h.01M19 14h.01"/><path class="draw" d="M14 26h10M14 30h20"/></svg>
+      <h3>網站與網頁應用</h3>
+      <p>形象網站、活動頁、進銷存、內部工具。純前端做到能離線用，也能接後端、接資料庫。</p>
+      <span class="tile__tag">HTML / JS / React / Node</span>
+    </div>
+    <div class="tile" data-tilt>
+      <svg class="tile__icon" viewBox="0 0 48 48"><rect x="14" y="4" width="20" height="40" rx="4"/><path d="M20 8h8"/><circle class="pulse" cx="24" cy="26" r="6"/></svg>
+      <h3>App 修復與上架</h3>
+      <p>接手別人寫壞的 iOS / Android 專案，找根因、修到能編譯、能上架。</p>
+      <span class="tile__tag">Swift / Kotlin / CI</span>
+    </div>
+    <div class="tile" data-tilt>
+      <svg class="tile__icon" viewBox="0 0 48 48"><rect x="8" y="14" width="32" height="24" rx="6"/><path d="M24 6v8M16 6h16"/><circle cx="18" cy="26" r="2.5" class="eye"/><circle cx="30" cy="26" r="2.5" class="eye"/><path d="M18 33h12"/></svg>
+      <h3>Discord / LINE 機器人</h3>
+      <p>指令、按鈕面板、排程、通知、接 AI。社團管理到自動客服都能做。</p>
+      <span class="tile__tag">discord.js / LINE API</span>
+    </div>
+    <div class="tile" data-tilt>
+      <svg class="tile__icon" viewBox="0 0 48 48"><path class="spin" d="M24 8a16 16 0 1 1-11.3 4.7"/><path d="M8 8v10h10"/><path d="M18 26l4 4 8-8"/></svg>
+      <h3>自動化與資料處理</h3>
+      <p>每天重複做的事交給程式：抓資料、整理報表、定時通知、批次處理。</p>
+      <span class="tile__tag">Python / Node / 排程</span>
+    </div>
+    <div class="tile tile--wide tile--accent" data-tilt>
+      <svg class="tile__icon" viewBox="0 0 48 48"><path class="draw" d="M8 36c6-14 14-22 32-28"/><path d="M8 36l6-2-4-4z"/><rect x="26" y="20" width="14" height="10" rx="2" class="fade"/></svg>
+      <h3>概念圖與可點原型</h3>
+      <p>你還說不清楚的時候，我先畫。線稿 → 彩稿 → 可以點的原型，讓你看到再決定。這一步通常是省最多錢的一步。</p>
+      <span class="tile__tag">Figma / HTML 原型</span>
+    </div>
+    <div class="tile" data-tilt>
+      <svg class="tile__icon" viewBox="0 0 48 48"><path d="M24 4l16 6v12c0 10-7 18-16 22C15 40 8 32 8 22V10z"/><path class="draw" d="M17 24l5 5 9-10"/></svg>
+      <h3>安全檢查與交付</h3>
+      <p>接手的程式先掃一遍：有沒有後門、對外連線、明文密碼。交付時附檢查報告。</p>
+      <span class="tile__tag">靜態分析 / 加密交付</span>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 流程 ===== -->
+<section class="process" id="process">
+  <div class="sec-head">
+    <span class="sec-head__num">04</span>
+    <h2 class="sec-head__title" data-split>怎麼合作</h2>
+    <span class="sec-head__en">Process</span>
+  </div>
+  <div class="process__pin">
+    <div class="process__track" id="ptrack">
+      <div class="step">
+        <span class="step__num">01</span>
+        <h3>聊</h3>
+        <p>你用自己的話講，不用懂技術。我會問「這個東西誰在用、什麼時候用、最怕什麼出錯」。</p>
+        <em>30 分鐘</em>
+      </div>
+      <div class="step">
+        <span class="step__num">02</span>
+        <h3>畫</h3>
+        <p>把聊到的東西畫成概念圖跟需求筆記。你看到畫面，才知道自己真正要什麼。這時候改，最便宜。</p>
+        <em>1 – 3 天</em>
+      </div>
+      <div class="step">
+        <span class="step__num">03</span>
+        <h3>做</h3>
+        <p>確認範圍、報價、開工。過程中會有可以點的版本讓你邊看邊給意見，不會做完才發現不對。</p>
+        <em>依範圍</em>
+      </div>
+      <div class="step">
+        <span class="step__num">04</span>
+        <h3>交</h3>
+        <p>先給加密試用版確認，付款後拿原始檔、說明文件、安全檢查報告。之後要改，再聊。</p>
+        <em>交付 + 說明</em>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 價格 ===== -->
+<section class="pricing" id="pricing">
+  <div class="pricing__inner">
+    <span class="sec-head__num">05</span>
+    <h2 class="pricing__title"><span data-split>價格，另談。</span><em>Let's talk.</em></h2>
+    <p class="pricing__lead reveal">沒有價目表，因為沒有兩個案子是一樣的。把需求講清楚，我會給你一個範圍、一個時程，然後一起把它壓到合理。</p>
+    <div class="pricing__cards">
+      <div class="pcard reveal">
+        <b>範圍</b>
+        <p>要幾個畫面、接不接後端、有沒有登入。範圍越清楚，價格越準。</p>
+      </div>
+      <div class="pcard reveal">
+        <b>時間</b>
+        <p>急件可以，但會影響價格。不急的話我會排在品質優先的節奏。</p>
+      </div>
+      <div class="pcard reveal">
+        <b>之後</b>
+        <p>做完要不要維護、要不要教你自己改。這些都先講，不會事後加價。</p>
+      </div>
+    </div>
+    <a class="btn btn--primary btn--lg reveal" href="#contact" data-magnetic>把需求丟給我<svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+  </div>
+</section>
+
+<!-- ===== 聯絡 ===== -->
+<section class="contact" id="contact">
+  <div class="contact__inner">
+    <p class="contact__eyebrow reveal"><span class="status"></span>目前接案中 · 通常 24 小時內回覆</p>
+    <h2 class="contact__title"><span data-split>聊聊你的想法</span></h2>
+    <div class="contact__actions reveal" id="contactActions">
+      <a class="btn btn--primary btn--lg" href="https://github.com/Raw-air" target="_blank" rel="noopener" data-magnetic>GitHub<svg viewBox="0 0 24 24"><path d="M7 17L17 7M8 7h9v9"/></svg></a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="footer">
+  <span><span class="dot"></span>RAW AIR · 台北</span>
+  <span>© <b id="year">2026</b> · 把想法做成看得見的東西</span>
+  <a href="#top" data-magnetic>回到最上面 ↑</a>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.min.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
