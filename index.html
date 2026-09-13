@@ -4,7 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Raw Air — 把想法，做成看得見的東西</title>
-<meta name="description" content="接案開發：網站、App 修復與上架、Discord 機器人、自動化系統。你講需求，我先畫概念圖給你看，再談怎麼做。價格另談。">
+<meta name="description" content="接案開發：網站與網頁應用、App 開發修復與上架、AI 客服與 LINE / Discord 機器人、自動化、資料報表、接手舊專案。你講需求，我先畫概念圖給你看，再談怎麼做。">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"ProfessionalService","name":"RAW AIR","url":"https://raw-air.github.io/","description":"接案開發：網站、App、AI 機器人、自動化、資料報表、舊專案修復。","areaServed":"TW","availableLanguage":["zh-Hant","en"],"sameAs":["https://github.com/Raw-air"]}</script>
 <meta property="og:title" content="Raw Air — 把想法，做成看得見的東西">
 <meta property="og:description" content="接案開發：網站、App 修復、機器人、自動化。先畫給你看，再談怎麼做。">
 <meta property="og:type" content="website">
@@ -43,10 +44,10 @@
   <a class="nav__logo" href="#top" data-magnetic><span class="dot"></span>RAW AIR</a>
   <nav class="nav__links" aria-label="主要">
     <a href="#works" data-magnetic>作品</a>
-    <a href="#concept" data-magnetic>概念圖</a>
-    <a href="#services" data-magnetic>能做的事</a>
+    <a href="#services" data-magnetic>服務</a>
+    <a href="#capabilities" data-magnetic>能力清單</a>
     <a href="#process" data-magnetic>流程</a>
-    <a href="#pricing" data-magnetic>價格</a>
+    <a href="#faq" data-magnetic>常見問題</a>
   </nav>
   <div class="nav__right">
     <span class="nav__clock"><i>TPE</i> <b id="clock">--:--</b></span>
@@ -61,10 +62,12 @@
     <div class="menu__links">
       <a href="#works"><em>01</em>作品</a>
       <a href="#concept"><em>02</em>概念圖</a>
-      <a href="#services"><em>03</em>能做的事</a>
-      <a href="#process"><em>04</em>流程</a>
-      <a href="#pricing"><em>05</em>價格</a>
-      <a href="#contact"><em>06</em>聯絡</a>
+      <a href="#services"><em>03</em>主力服務</a>
+      <a href="#capabilities"><em>04</em>完整能力清單</a>
+      <a href="#process"><em>05</em>流程</a>
+      <a href="#pricing"><em>06</em>價格</a>
+      <a href="#faq"><em>07</em>常見問題</a>
+      <a href="#contact"><em>08</em>聯絡</a>
     </div>
     <div class="menu__foot">
       <span>台北 · 接案中</span>
@@ -93,7 +96,7 @@
   </div>
   <div class="hero__bottom">
     <div class="hero__scroll"><span></span>往下捲</div>
-    <div class="hero__meta"><b>04</b> 個作品 · <b>06</b> 種服務 · 價格另談</div>
+    <div class="hero__meta"><b>04</b> 個交付案 · <b class="js-cat-count">12</b> 大類 · <b class="js-cap-count">106</b> 項服務</div>
   </div>
 </section>
 
@@ -111,7 +114,7 @@
   <div class="manifesto__stats reveal">
     <div><b data-count="4">0</b><span>個交付案</span></div>
     <div><b data-count="1985">0</b><span>家上市櫃公司資料接入</span></div>
-    <div><b data-count="0">0</b><span>個編譯錯誤交付</span></div>
+    <div><b data-count="106" class="js-cap-stat">0</b><span>項可承接的服務</span></div>
   </div>
 </section>
 
@@ -255,7 +258,7 @@
 <section class="services" id="services">
   <div class="sec-head">
     <span class="sec-head__num">03</span>
-    <h2 class="sec-head__title" data-split>能做的事</h2>
+    <h2 class="sec-head__title" data-split>主力服務</h2>
     <span class="sec-head__en">Services</span>
   </div>
   <div class="bento">
@@ -298,10 +301,46 @@
   </div>
 </section>
 
+<!-- ===== 完整能力清單（內容在 js/main.js 的 CAPS） ===== -->
+<section class="caps" id="capabilities">
+  <div class="sec-head">
+    <span class="sec-head__num">04</span>
+    <h2 class="sec-head__title" data-split>完整能力清單</h2>
+    <span class="sec-head__en">Capabilities</span>
+  </div>
+  <div class="caps__intro">
+    <p class="caps__lead reveal">上面是主力，這裡是全部。從一頁網站到 AI 客服、從修一個 bug 到接手整個爛尾專案，<b class="js-cat-count">12</b> 大類、<b class="js-cap-count">106</b> 項。找不到你要的？直接問，多半也能做。</p>
+    <label class="caps__search reveal">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+      <input id="capSearch" type="search" placeholder="搜尋，例如：LINE、Excel、上架、爬蟲" autocomplete="off">
+    </label>
+  </div>
+  <div class="caps__grid">
+    <div class="caps__cats" id="capCats" role="tablist" aria-label="服務分類"></div>
+    <div class="caps__panel" id="capPanel" aria-live="polite">
+      <div class="caps__head">
+        <div>
+          <span class="caps__en" id="capEn"></span>
+          <h3 class="caps__title" id="capTitle"></h3>
+          <p class="caps__blurb" id="capBlurb"></p>
+        </div>
+        <a class="btn btn--sm" href="#contact" data-magnetic>這類需求找我<svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      </div>
+      <ol class="caps__list" id="capList"></ol>
+    </div>
+  </div>
+  <div class="caps__stack reveal" aria-label="常用技術">
+    <span>常用技術</span>
+    <ul>
+      <li>HTML / CSS</li><li>JavaScript</li><li>TypeScript</li><li>React</li><li>Next.js</li><li>Vue</li><li>Node.js</li><li>Python</li><li>Go</li><li>PHP</li><li>Swift</li><li>Kotlin</li><li>Flutter</li><li>PostgreSQL</li><li>MySQL</li><li>Firebase</li><li>Supabase</li><li>Docker</li><li>GitHub Actions</li><li>Cloudflare</li><li>Playwright</li><li>Claude / OpenAI API</li>
+    </ul>
+  </div>
+</section>
+
 <!-- ===== 流程 ===== -->
 <section class="process" id="process">
   <div class="sec-head">
-    <span class="sec-head__num">04</span>
+    <span class="sec-head__num">05</span>
     <h2 class="sec-head__title" data-split>怎麼合作</h2>
     <span class="sec-head__en">Process</span>
   </div>
@@ -338,7 +377,7 @@
 <!-- ===== 價格 ===== -->
 <section class="pricing" id="pricing">
   <div class="pricing__inner">
-    <span class="sec-head__num">05</span>
+    <span class="sec-head__num">06</span>
     <h2 class="pricing__title"><span data-split>價格，另談。</span><em>Let's talk.</em></h2>
     <p class="pricing__lead reveal">沒有價目表，因為沒有兩個案子是一樣的。把需求講清楚，我會給你一個範圍、一個時程，然後一起把它壓到合理。</p>
     <div class="pricing__cards">
@@ -356,6 +395,43 @@
       </div>
     </div>
     <a class="btn btn--primary btn--lg reveal" href="#contact" data-magnetic>把需求丟給我<svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+  </div>
+</section>
+
+<!-- ===== 每個案子都會拿到 ===== -->
+<section class="deliver">
+  <div class="sec-head">
+    <span class="sec-head__num">—</span>
+    <h2 class="sec-head__title" data-split>每個案子都會拿到</h2>
+    <span class="sec-head__en">What you get</span>
+  </div>
+  <ul class="deliver__list">
+    <li class="reveal"><b>01</b><h3>需求筆記</h3><p>聊完整理成文字，範圍寫清楚，之後驗收照這份對。</p></li>
+    <li class="reveal"><b>02</b><h3>試用版</h3><p>付尾款前先完整試用，確認功能沒問題。</p></li>
+    <li class="reveal"><b>03</b><h3>原始碼</h3><p>付清後完整交付，含版本紀錄，換人接手也看得懂。</p></li>
+    <li class="reveal"><b>04</b><h3>說明文件</h3><p>怎麼用、怎麼改、怎麼重新上線，白話寫。</p></li>
+    <li class="reveal"><b>05</b><h3>安全檢查報告</h3><p>有沒有明文密碼、可疑連線、過期套件，掃過才交。</p></li>
+    <li class="reveal"><b>06</b><h3>進度可見</h3><p>開發中就有可以點的版本，不會做完才發現不對。</p></li>
+  </ul>
+</section>
+
+<!-- ===== 常見問題 ===== -->
+<section class="faq" id="faq">
+  <div class="sec-head">
+    <span class="sec-head__num">07</span>
+    <h2 class="sec-head__title" data-split>常見問題</h2>
+    <span class="sec-head__en">FAQ</span>
+  </div>
+  <div class="faq__list">
+    <details class="reveal" open><summary>我完全不懂技術，可以找你嗎？</summary><p>可以，而且多數客人都是這樣。你用自己的話講要解決什麼問題，我會問問題、畫概念圖，把它翻譯成可以做的東西。</p></details>
+    <details class="reveal"><summary>大概多久可以做好？</summary><p>看範圍。小工具、單頁網站、修一個 bug 通常比較快；有登入、有後台、要串金流的系統就要比較久。第一次聊完、範圍確定後，會給你明確的時程。</p></details>
+    <details class="reveal"><summary>怎麼付款？會不會付了錢拿不到東西？</summary><p>可以分階段付款。做完先給你加密試用版，完整操作確認沒問題，再付尾款、拿原始碼。雙方都有保障。</p></details>
+    <details class="reveal"><summary>做好之後，程式是誰的？</summary><p>付清後原始碼完整交給你，含說明文件。你要自己改、找別人維護、搬到別的主機都可以。</p></details>
+    <details class="reveal"><summary>交付後壞了、想改怎麼辦？</summary><p>交付後的小修正範圍，報價時就會寫清楚。要長期維護或加新功能，可以另外談月費或按次計。</p></details>
+    <details class="reveal"><summary>只修一個小問題也可以嗎？</summary><p>可以。網站跑版、App 編譯不過、Excel 公式壞掉、機器人不回話，這種單點問題也接。</p></details>
+    <details class="reveal"><summary>別人做到一半的專案可以接嗎？</summary><p>可以。先做一次程式健檢：看懂架構、列出問題、評估修還是重寫比較划算，再決定要不要繼續。</p></details>
+    <details class="reveal"><summary>全程遠端嗎？</summary><p>是，遠端為主，台灣時區。用 LINE、Email 或視訊溝通，進度用可以點的版本給你看。</p></details>
+    <details class="reveal"><summary>有不接的案子嗎？</summary><p>有。違法、侵權、盜版、遊戲外掛、灌量假帳號、未經同意蒐集個資、詐騙與賭博相關，一律不接。</p></details>
   </div>
 </section>
 

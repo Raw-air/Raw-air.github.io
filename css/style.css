@@ -503,6 +503,61 @@ svg{display:block}
 .footer a{color:var(--fg-2);transition:color .3s}
 .footer a:hover{color:var(--fg)}
 
+/* ---------- 完整能力清單 ---------- */
+.caps{padding:clamp(80px,10vw,160px) 0 0;background:linear-gradient(180deg,var(--bg) 0%,var(--bg-2) 18%,var(--bg-2) 85%,var(--bg) 100%)}
+.caps__intro{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:24px 48px;padding:0 var(--gutter);margin:-32px 0 48px}
+.caps__lead{max-width:640px;color:var(--fg-2);font-size:clamp(1rem,1.3vw,1.15rem)}
+.caps__lead b{color:var(--fg);font-weight:500;font-family:var(--mono)}
+.caps__search{display:flex;align-items:center;gap:12px;width:min(100%,400px);padding:14px 20px;border:1px solid var(--line-2);border-radius:999px;background:var(--bg);transition:border-color .3s}
+.caps__search:focus-within{border-color:var(--accent)}
+.caps__search svg{width:18px;height:18px;flex:none;fill:none;stroke:var(--fg-2);stroke-width:2;stroke-linecap:round}
+.caps__search input{flex:1;min-width:0;background:none;border:0;outline:0;color:var(--fg);font:inherit;font-size:15px}
+.caps__search input::placeholder{color:var(--fg-3)}
+.caps__grid{display:grid;grid-template-columns:minmax(240px,300px) 1fr;gap:clamp(24px,4vw,56px);padding:0 var(--gutter);align-items:start}
+.caps__cats{position:sticky;top:96px;display:flex;flex-direction:column;gap:2px}
+.cat{display:grid;grid-template-columns:34px 1fr auto;align-items:center;gap:8px;text-align:left;padding:12px 14px;border-radius:12px;color:var(--fg-2);font-size:15px;font-weight:400;position:relative;transition:color .3s,background .3s}
+.cat em{font-style:normal;font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--fg-3)}
+.cat b{font-family:var(--mono);font-size:11px;font-weight:500;color:var(--fg-3);padding:2px 8px;border:1px solid var(--line);border-radius:999px}
+.cat:hover{color:var(--fg);background:rgba(255,255,255,.03)}
+.cat.is-active{color:var(--fg);background:rgba(255,107,53,.1)}
+.cat.is-active em{color:var(--accent)}
+.cat.is-active b{color:#0a0a0c;background:var(--accent);border-color:var(--accent)}
+.caps__panel{border:1px solid var(--line-2);border-radius:22px;background:var(--bg);padding:clamp(22px,3vw,40px);min-height:560px}
+.caps__head{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;padding-bottom:24px;margin-bottom:8px;border-bottom:1px solid var(--line)}
+.caps__en{font-family:var(--en);font-style:italic;font-size:1.1rem;color:var(--accent)}
+.caps__title{font-family:var(--serif);font-weight:700;font-size:clamp(1.6rem,2.8vw,2.4rem);line-height:1.2;margin:2px 0 8px}
+.caps__blurb{color:var(--fg-2);font-size:15px;max-width:560px}
+.caps__head .btn{flex:none;margin-top:8px}
+.caps__list{list-style:none;display:grid;grid-template-columns:repeat(2,1fr);column-gap:32px}
+.cap{display:grid;grid-template-columns:32px 1fr;gap:10px;padding:18px 0;border-bottom:1px solid var(--line)}
+.cap__n{font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--fg-3);padding-top:4px}
+.cap h4{font-family:var(--sans);font-weight:500;font-size:16px;color:var(--fg);line-height:1.5;margin-bottom:3px}
+.cap p{color:var(--fg-2);font-size:14px;line-height:1.7}
+.cap small{display:inline-block;margin-top:6px;font-size:11px;color:var(--accent);border:1px solid rgba(255,107,53,.35);padding:1px 8px;border-radius:999px}
+.caps__stack{display:flex;align-items:baseline;gap:24px;padding:48px var(--gutter) clamp(60px,8vw,100px)}
+.caps__stack > span{flex:none;font-family:var(--mono);font-size:11px;letter-spacing:.25em;color:var(--fg-3)}
+.caps__stack ul{list-style:none;display:flex;flex-wrap:wrap;gap:8px}
+.caps__stack li{font-family:var(--mono);font-size:12px;color:var(--fg-2);padding:6px 12px;border:1px solid var(--line);border-radius:999px}
+
+/* ---------- 每個案子都會拿到 ---------- */
+.deliver{padding:0 0 clamp(80px,10vw,140px)}
+.deliver__list{list-style:none;display:grid;grid-template-columns:repeat(3,1fr);gap:1px;margin:0 var(--gutter);background:var(--line);border:1px solid var(--line);border-radius:20px;overflow:hidden}
+.deliver__list li{background:var(--bg);padding:32px 30px}
+.deliver__list b{font-family:var(--mono);font-size:12px;font-weight:500;letter-spacing:.2em;color:var(--accent)}
+.deliver__list h3{font-family:var(--serif);font-size:1.35rem;font-weight:700;margin:14px 0 8px}
+.deliver__list p{color:var(--fg-2);font-size:14.5px;line-height:1.75}
+
+/* ---------- 常見問題 ---------- */
+.faq{padding:clamp(60px,8vw,120px) 0 clamp(100px,12vw,180px)}
+.faq__list{max-width:960px;margin:0 var(--gutter);border-top:1px solid var(--line)}
+.faq details{border-bottom:1px solid var(--line)}
+.faq summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:24px;padding:26px 4px;font-family:var(--serif);font-weight:500;font-size:clamp(1.05rem,1.6vw,1.3rem);color:var(--fg);transition:color .3s}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"";flex:none;width:14px;height:14px;background:linear-gradient(var(--fg-2),var(--fg-2)) center/100% 1.5px no-repeat,linear-gradient(var(--fg-2),var(--fg-2)) center/1.5px 100% no-repeat;transition:transform .4s var(--ease)}
+.faq details[open] summary::after{transform:rotate(45deg)}
+.faq summary:hover{color:var(--accent)}
+.faq details p{color:var(--fg-2);font-size:15px;line-height:1.85;padding:0 48px 28px 4px;max-width:760px}
+
 /* ---------- 響應式 ---------- */
 @media (max-width:1100px){
   .bento{grid-template-columns:repeat(2,1fr)}
@@ -525,6 +580,16 @@ svg{display:block}
   .step h3{margin:16px 0 12px}
   .sec-head{grid-template-columns:auto 1fr;grid-template-rows:auto auto}
   .sec-head__en{grid-column:2;padding-bottom:0}
+  .caps__grid{grid-template-columns:1fr}
+  .caps__cats{position:sticky;top:0;z-index:5;flex-direction:row;overflow-x:auto;gap:6px;margin:0 calc(var(--gutter) * -1);padding:12px var(--gutter);background:rgba(16,16,20,.92);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);scrollbar-width:none}
+  .caps__cats::-webkit-scrollbar{display:none}
+  .cat{flex:none;grid-template-columns:auto auto;padding:8px 14px;border:1px solid var(--line);border-radius:999px;font-size:14px;white-space:nowrap}
+  .cat em{display:none}
+  .caps__list{grid-template-columns:1fr}
+  .caps__head{flex-direction:column}
+  .caps__panel{min-height:0}
+  .caps__stack{flex-direction:column;gap:14px}
+  .deliver__list{grid-template-columns:repeat(2,1fr)}
 }
 @media (max-width:600px){
   .bento{grid-template-columns:1fr}
@@ -540,6 +605,8 @@ svg{display:block}
   .cm-dash{grid-template-columns:1fr;aspect-ratio:auto}
   .cm-dash .b--side{display:none}
   .manifesto__stats{gap:28px}
+  .deliver__list{grid-template-columns:1fr}
+  .faq details p{padding-right:4px}
 }
 
 /* ---------- 減少動態 ---------- */
