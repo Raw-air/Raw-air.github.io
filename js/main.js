@@ -7,7 +7,7 @@
   /* ---------- 可以改的設定 ---------- */
   const CONFIG = {
     email: '',            // 填上 Email 後，聯絡區會多一顆「寫信給我」按鈕
-    line: '',             // 填上 LINE ID 或 lin.ee 連結，會多一顆 LINE 按鈕
+    line: '16225113',     // 填上 LINE ID 或 lin.ee 連結，會多一顆 LINE 按鈕
     autoCycleConcept: true // 概念圖區沒人點的時候自動輪播
   };
 
@@ -554,10 +554,13 @@
   }
   if (CONFIG.line) {
     const a = document.createElement('a');
-    a.className = 'btn btn--lg'; a.target = '_blank'; a.rel = 'noopener';
+    a.className = 'btn btn--primary btn--lg'; a.target = '_blank'; a.rel = 'noopener';
     a.href = CONFIG.line.startsWith('http') ? CONFIG.line : 'https://line.me/ti/p/~' + CONFIG.line;
-    a.textContent = 'LINE';
-    actions.appendChild(a);
+    a.textContent = CONFIG.line.startsWith('http') ? 'LINE 聊聊' : `LINE 聊聊 · ID ${CONFIG.line}`;
+    actions.prepend(a);
+    // LINE 當主按鈕，GitHub 退成次要
+    const gh = $('a[href*="github.com"]', actions);
+    if (gh) gh.classList.remove('btn--primary');
   }
 
   /* ---------- HERO：WebGL 流體光 ---------- */
