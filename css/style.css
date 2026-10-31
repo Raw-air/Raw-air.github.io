@@ -734,9 +734,7 @@ svg{display:block}
 .faq summary{transition:color .3s,padding-left .4s var(--ease)}
 .faq details:hover summary{padding-left:10px}
 .faq details[open] summary{color:var(--accent)}
-.faq .faq__body{display:grid;grid-template-rows:0fr;transition:grid-template-rows .5s var(--ease),opacity .4s}
-.faq details[open] .faq__body{grid-template-rows:1fr}
-.faq .faq__body>div{overflow:hidden;min-height:0}
+.faq .faq__body{overflow:hidden}
 
 /* ---------- 聯絡：粒子背景 ---------- */
 .contact{position:relative;overflow:hidden}
@@ -760,3 +758,6 @@ svg{display:block}
   .tile .tile__beam{display:none}
   .sec-head::after{transform:scaleX(1)}
 }
+
+/* 手機：作品區的裝飾不可撐出左右捲動 */
+.works{overflow-x:clip}

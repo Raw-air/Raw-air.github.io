@@ -930,20 +930,26 @@ void main(){
     });
   });
 
-  /* ---------- v4：常見問題平滑展開 ---------- */
+  /* ---------- v4：常見問題平滑展開（一次開一題） ---------- */
+  const faqClose = (d) => {
+    const body = $('.faq__body', d);
+    if (reduced) { d.removeAttribute('open'); return; }
+    gsap.to(body, { height: 0, duration: .35, ease: 'power2.inOut', overwrite: true, onComplete() { d.removeAttribute('open'); gsap.set(body, { clearProps: 'height' }); softRefresh(); } });
+  };
+  const faqOpen = (d) => {
+    const body = $('.faq__body', d);
+    d.setAttribute('open', '');
+    if (reduced) { softRefresh(); return; }
+    gsap.fromTo(body, { height: 0 }, { height: 'auto', duration: .45, ease: 'power3.out', overwrite: true, onComplete: softRefresh });
+  };
   $$('.faq details').forEach((d) => {
-    const sum = $('summary', d);
-    sum.addEventListener('click', (e) => {
+    d.dataset.want = d.open ? '1' : '';
+    $('summary', d).addEventListener('click', (e) => {
       e.preventDefault();
-      if (d.open) {
-        d.classList.add('is-closing');
-        d.removeAttribute('open');
-        setTimeout(() => d.classList.remove('is-closing'), 20);
-        return;
-      }
-      $$('.faq details[open]').forEach((o) => { if (o !== d) o.removeAttribute('open'); });
-      d.setAttribute('open', '');
-      softRefresh();
+      const opening = !d.dataset.want;
+      $$('.faq details').forEach((o) => { if (o !== d && o.dataset.want) { o.dataset.want = ''; faqClose(o); } });
+      d.dataset.want = opening ? '1' : '';
+      if (opening) faqOpen(d); else faqClose(d);
     });
   });
 
