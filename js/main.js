@@ -539,10 +539,6 @@
   capSearch.addEventListener('input', () => searchCaps(capSearch.value));
   selectCat(capCurrent);
 
-  /* ---------- 常見問題：一次開一題 ---------- */
-  $$('.faq details').forEach((d) => d.addEventListener('toggle', () => {
-    if (d.open) $$('.faq details').forEach((o) => { if (o !== d) o.open = false; });
-  }));
 
   /* ---------- 聯絡按鈕 ---------- */
   const actions = $('#contactActions');
@@ -868,6 +864,148 @@ void main(){
       group.rotation.set(-.18 + tilt.x + Math.sin(t * .4) * .05, spin + smooth * TAU * 1.5 + tilt.y, Math.sin(t * .3) * .04);
       dustPts.rotation.y = smooth * .6;
       mat.uniforms.uTime.value = t;
+      renderer.render(scene, camera);
+    };
+    requestAnimationFrame(frame);
+  })();
+
+
+  /* ---------- v4：捲動進度條 ---------- */
+  (function progressBar() {
+    const bar = document.createElement('div');
+    bar.className = 'sprog';
+    bar.innerHTML = '<i></i>';
+    document.body.appendChild(bar);
+    const fill = bar.firstElementChild;
+    const set = () => {
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      fill.style.transform = `scaleX(${max > 0 ? Math.min(window.scrollY / max, 1) : 0})`;
+    };
+    if (lenis) lenis.on('scroll', set); else window.addEventListener('scroll', set, { passive: true });
+    window.addEventListener('resize', set);
+    set();
+  })();
+
+  /* ---------- v4：右側章節指示 ---------- */
+  (function sectionHud() {
+    if (isTouch) return;
+    const map = [['#hero', '首頁'], ['#abilities', '能力'], ['#works', '作品'], ['#concept', '概念圖'],
+      ['#services', '服務'], ['#capabilities', '能力清單'], ['#process', '流程'], ['#pricing', '價格'],
+      ['#faq', '常見問題'], ['#contact', '聯絡']];
+    const items = map.filter(([sel]) => $(sel));
+    if (!items.length) return;
+    const hud = document.createElement('nav');
+    hud.className = 'shud';
+    hud.setAttribute('aria-label', '區塊導覽');
+    hud.innerHTML = items.map(([sel, name]) => `<button type="button" data-to="${sel}"><em>${name}</em><i></i></button>`).join('');
+    document.body.appendChild(hud);
+    const btns = $$('button', hud);
+    btns.forEach((b) => b.addEventListener('click', () => {
+      const t = $(b.dataset.to);
+      if (t) scrollTo(t);
+    }));
+    const mark = (i) => btns.forEach((b, k) => b.classList.toggle('is-on', k === i));
+    mark(0);
+    items.forEach(([sel], i) => ScrollTrigger.create({
+      trigger: sel, start: 'top 55%', end: 'bottom 55%',
+      onToggle: (self) => { if (self.isActive) mark(i); }
+    }));
+  })();
+
+  /* ---------- v4：服務卡片底紋與光束 ---------- */
+  $$('.tile').forEach((t) => {
+    t.insertAdjacentHTML('afterbegin', '<span class="tile__grid" aria-hidden="true"></span><span class="tile__beam" aria-hidden="true"></span>');
+  });
+
+  /* ---------- v4：作品大編號 ---------- */
+  $$('.work').forEach((w, i) => {
+    const g = document.createElement('span');
+    g.className = 'work__ghost';
+    g.setAttribute('aria-hidden', 'true');
+    g.textContent = String(i + 1).padStart(2, '0');
+    w.appendChild(g);
+    if (!reduced) gsap.fromTo(g, { yPercent: 12 }, {
+      yPercent: -12, ease: 'none',
+      scrollTrigger: { trigger: w, start: 'top bottom', end: 'bottom top', scrub: true }
+    });
+  });
+
+  /* ---------- v4：常見問題平滑展開 ---------- */
+  $$('.faq details').forEach((d) => {
+    const sum = $('summary', d);
+    sum.addEventListener('click', (e) => {
+      e.preventDefault();
+      if (d.open) {
+        d.classList.add('is-closing');
+        d.removeAttribute('open');
+        setTimeout(() => d.classList.remove('is-closing'), 20);
+        return;
+      }
+      $$('.faq details[open]').forEach((o) => { if (o !== d) o.removeAttribute('open'); });
+      d.setAttribute('open', '');
+      softRefresh();
+    });
+  });
+
+  /* ---------- v4：聯絡區粒子 ---------- */
+  (function contactField() {
+    const cv = $('#contactGl');
+    if (!cv || !window.THREE) return;
+    const N = window.innerWidth < 700 ? 1400 : 3200;
+    const renderer = new THREE.WebGLRenderer({ canvas: cv, antialias: false, alpha: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(45, 1, .1, 60);
+    camera.position.z = 7;
+    const pos = new Float32Array(N * 3), seed = new Float32Array(N * 3);
+    for (let i = 0; i < N; i++) {
+      const a = Math.random() * Math.PI * 2, r = 1.2 + Math.pow(Math.random(), .55) * 3.8;
+      pos[i * 3] = Math.cos(a) * r * 1.5;
+      pos[i * 3 + 1] = Math.sin(a) * r * .7;
+      pos[i * 3 + 2] = (Math.random() - .5) * 3;
+      seed[i * 3] = Math.random() * 6.28; seed[i * 3 + 1] = .3 + Math.random() * .9; seed[i * 3 + 2] = Math.random();
+    }
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+    geo.setAttribute('aSeed', new THREE.BufferAttribute(seed, 3));
+    const mat = new THREE.ShaderMaterial({
+      transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
+      uniforms: { uTime: { value: 0 }, uPx: { value: renderer.getPixelRatio() } },
+      vertexShader: `uniform float uTime; uniform float uPx; attribute vec3 aSeed; varying float vF;
+        void main(){
+          vec3 p = position;
+          float sw = uTime * .12 * aSeed.y;
+          float c = cos(sw), s = sin(sw);
+          p.xy = mat2(c, -s, s, c) * p.xy;
+          p.z += sin(uTime * .5 + aSeed.x) * .3;
+          vec4 mv = modelViewMatrix * vec4(p, 1.);
+          gl_Position = projectionMatrix * mv;
+          gl_PointSize = (14.0 + 22.0 * aSeed.z) * uPx / -mv.z;
+          vF = aSeed.z;
+        }`,
+      fragmentShader: `varying float vF;
+        void main(){
+          float r = length(gl_PointCoord - .5);
+          float a = smoothstep(.5, .0, r); a *= a;
+          vec3 col = mix(vec3(1., .42, .21), vec3(.49, .36, 1.), vF);
+          col = mix(col, vec3(1.), smoothstep(.2, .0, r) * .5);
+          gl_FragColor = vec4(col, a * .85);
+        }`
+    });
+    const pts = new THREE.Points(geo, mat);
+    scene.add(pts);
+    const layout = () => {
+      const w = cv.clientWidth, h = cv.clientHeight;
+      renderer.setSize(w, h, false);
+      camera.aspect = w / h; camera.updateProjectionMatrix();
+    };
+    layout(); window.addEventListener('resize', layout);
+    let visible = false, t0 = performance.now();
+    new IntersectionObserver((en) => (visible = en[0].isIntersecting), { rootMargin: '150px' }).observe(cv);
+    const frame = (now) => {
+      requestAnimationFrame(frame);
+      if (!visible) return;
+      mat.uniforms.uTime.value = reduced ? 0 : (now - t0) / 1000;
       renderer.render(scene, camera);
     };
     requestAnimationFrame(frame);
