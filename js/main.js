@@ -622,5 +622,256 @@ void main(){
     requestAnimationFrame(frame);
   })();
 
+  /* ---------- 3D 能力展示：捲動時粒子在 6 個形狀之間變形 ----------
+     要改文字就改這裡；shape 對應下面 SHAPES 裡的形狀。 */
+  const ORBIT = [
+    { shape: 'web', color: [1, .42, .21], en: 'Web', title: '網站與網頁應用', desc: '形象網站、活動頁、會員後台。一層一層疊起來：版面、內容、互動、資料。', tags: ['React / Next.js', '後台', 'SEO', '手機好看'] },
+    { shape: 'app', color: [.49, .36, 1], en: 'Mobile', title: 'App 開發・修復・上架', desc: '接手寫壞的 iOS / Android，找根因、修到能編譯，一路送到上架。', tags: ['Swift', 'Kotlin', 'Flutter', '雲端編譯'] },
+    { shape: 'ai', color: [.22, .82, .72], en: 'AI & Bots', title: 'AI 應用與機器人', desc: 'AI 客服、知識庫問答、Discord / LINE 機器人。像神經網路一樣，把資料接起來。', tags: ['LINE Bot', 'Discord', 'RAG 知識庫', '多 AI 協作'] },
+    { shape: 'auto', color: [1, .72, .3], en: 'Automation', title: '自動化流程', desc: '每天重複的事寫成程式，一圈一圈自己跑：抓資料、整理、通知、寄報表。', tags: ['排程', '爬公開資料', 'Excel 自動化', 'n8n'] },
+    { shape: 'data', color: [.35, .6, 1], en: 'Data', title: '資料與報表', desc: 'Excel 變系統、儀表板、一鍵出 PDF 單據。數字不再手算。', tags: ['儀表板', '圖表', 'PDF 單據', '資料清理'] },
+    { shape: 'shield', color: [.24, .86, .59], en: 'Security', title: '安全檢查與交付', desc: '接手的程式先掃一遍：後門、可疑連線、明文密碼。付款前先給加密試用版。', tags: ['程式健檢', '加密試用', '檢查報告', 'CI'] }
+  ];
+
+  (function orbit() {
+    const section = $('#abilities');
+    const cv = $('#orbitGl');
+    if (!section || !cv || !window.THREE) { if (section) section.classList.add('is-static'); return; }
+    const N = window.innerWidth < 700 ? 2600 : 5200;
+    const R = Math.random;
+    const TAU = Math.PI * 2;
+
+    /* 每個形狀回傳一個點 [x,y,z]，大小約在 -1.3 ~ 1.3 */
+    const pickRect = (w, h) => [(R() - .5) * w, (R() - .5) * h];
+    const rectEdge = (w, h) => {
+      const p = R() * 2 * (w + h);
+      if (p < w) return [p - w / 2, -h / 2];
+      if (p < w + h) return [w / 2, p - w - h / 2];
+      if (p < 2 * w + h) return [p - w - h - w / 2, h / 2];
+      return [-w / 2, p - 2 * w - h - h / 2];
+    };
+    const SHAPES = {
+      // 網站：四層拆開的網頁（外框 / 版頭 / 內容卡片 / 資料）
+      web() {
+        const layer = Math.floor(R() * 4), z = (layer - 1.5) * .42;
+        const W = 2.2, H = 1.45;
+        let x, y;
+        if (layer === 0) { [x, y] = R() < .7 ? rectEdge(W, H) : [(R() - .5) * W, H / 2 - .12 + (R() - .5) * .04]; }
+        else if (layer === 1) { [x, y] = pickRect(W * .86, .42); y += .35; }
+        else if (layer === 2) { const c = Math.floor(R() * 3); [x, y] = pickRect(.6, .5); x += (c - 1) * .72; y -= .3; }
+        else { [x, y] = rectEdge(W * .9, H * .9); if (R() < .5) { x = (R() - .5) * W * .8; y = -.62 + Math.floor(R() * 3) * .06; } }
+        return [x, y, z];
+      },
+      // App：立體手機外殼 + 螢幕上的圖示格
+      app() {
+        const W = 1.05, H = 2.1, D = .14, r = R();
+        if (r < .45) { const [x, y] = rectEdge(W, H); return [x, y, (R() - .5) * D]; }
+        if (r < .6) { const [x, y] = rectEdge(W * .92, H * .9); return [x, y, D / 2]; }
+        const col = Math.floor(R() * 3), row = Math.floor(R() * 4);
+        const [x, y] = pickRect(.2, .2);
+        return [x + (col - 1) * .3, y + .55 - row * .36, D / 2 + .02];
+      },
+      // AI：球面神經網路（表面節點 + 內部核心）
+      ai() {
+        if (R() < .22) { const rr = Math.cbrt(R()) * .45, u = R() * TAU, v = Math.acos(2 * R() - 1); return [rr * Math.sin(v) * Math.cos(u), rr * Math.sin(v) * Math.sin(u), rr * Math.cos(v)]; }
+        const u = R() * TAU, v = Math.acos(2 * R() - 1);
+        const k = 1.15 + .12 * Math.sin(u * 5) * Math.sin(v * 4);
+        return [k * Math.sin(v) * Math.cos(u), k * Math.sin(v) * Math.sin(u), k * Math.cos(v)];
+      },
+      // 自動化：無限循環的環結
+      auto() {
+        const t = R() * TAU, p = 2, q = 3, s = .42;
+        const rr = Math.cos(q * t) + 2;
+        const cx = rr * Math.cos(p * t) * s, cy = rr * Math.sin(p * t) * s, cz = -Math.sin(q * t) * s;
+        const a = R() * TAU, tube = .11;
+        return [cx + Math.cos(a) * tube, cy + Math.sin(a) * tube, cz + (R() - .5) * tube * 2];
+      },
+      // 資料：3D 長條圖
+      data() {
+        const HGT = [.5, .9, .7, 1.4, 1.1, 1.8, .8, 1.25, 1.55, .6, 1.0, 2.0];
+        const i = Math.floor(R() * 12), cx = (i % 4 - 1.5) * .5, cz = (Math.floor(i / 4) - 1) * .5, h = HGT[i];
+        const face = Math.floor(R() * 3), s = .34;
+        let x = cx + (R() - .5) * s, z = cz + (R() - .5) * s, y = R() * h;
+        if (face === 0) y = h; else if (face === 1) x = cx + (R() < .5 ? -s / 2 : s / 2); else z = cz + (R() < .5 ? -s / 2 : s / 2);
+        if (R() < .08) { x = (R() - .5) * 2.2; z = (R() - .5) * 1.6; y = 0; }
+        return [x, y - 1, z];
+      },
+      // 安全：盾牌 + 打勾
+      shield() {
+        const r = R();
+        if (r < .22) { const t = R(); const [ax, ay, bx, by, cx, cy] = [-.42, -.02, -.1, -.34, .45, .3]; return t < .4 ? [ax + (bx - ax) * t / .4, ay + (by - ay) * t / .4, .12] : [bx + (cx - bx) * (t - .4) / .6, by + (cy - by) * (t - .4) / .6, .12]; }
+        const t = R();
+        let x, y;
+        if (t < .5) { const a = t / .5; x = -1 + 2 * a; y = 1 - .12 * Math.sin(a * Math.PI); }
+        else { const a = (t - .5) / .5, side = R() < .5 ? -1 : 1; x = side * (1 - a * a) ; y = 1 - a * 2.3; }
+        const k = R() < .6 ? 1 : .82;
+        return [x * k, y * k + .1, (R() - .5) * .22];
+      }
+    };
+
+    const renderer = new THREE.WebGLRenderer({ canvas: cv, antialias: false, alpha: true, powerPreference: 'high-performance' });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.75));
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(42, 1, .1, 50);
+    camera.position.set(0, 0, 6.2);
+
+    // 每個形狀一組位置，另外給每顆粒子一個隨機方向（變形中途會往外炸開再收回）
+    const buffers = ORBIT.map((o) => {
+      const arr = new Float32Array(N * 3);
+      for (let i = 0; i < N; i++) { const p = SHAPES[o.shape](); arr[i * 3] = p[0]; arr[i * 3 + 1] = p[1]; arr[i * 3 + 2] = p[2]; }
+      return new THREE.BufferAttribute(arr, 3);
+    });
+    const rnd = new Float32Array(N * 4);
+    for (let i = 0; i < N * 4; i++) rnd[i] = R() * 2 - 1;
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', buffers[0]);
+    geo.setAttribute('aFrom', buffers[0]);
+    geo.setAttribute('aTo', buffers[1]);
+    geo.setAttribute('aRnd', new THREE.BufferAttribute(rnd, 4));
+
+    const mat = new THREE.ShaderMaterial({
+      transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
+      uniforms: {
+        uMix: { value: 0 }, uTime: { value: 0 }, uSize: { value: (window.innerWidth < 700 ? 15 : 19) * renderer.getPixelRatio() },
+        uColA: { value: new THREE.Color(...ORBIT[0].color) }, uColB: { value: new THREE.Color(...ORBIT[1].color) }
+      },
+      vertexShader: `
+        uniform float uMix; uniform float uTime; uniform float uSize;
+        attribute vec3 aFrom; attribute vec3 aTo; attribute vec4 aRnd;
+        varying float vA; varying float vT;
+        void main(){
+          float d = aRnd.w * .5 + .5;
+          float m = smoothstep(d * .35, d * .35 + .65, uMix);
+          float burst = sin(m * 3.14159);
+          vec3 p = mix(aFrom, aTo, m);
+          p += aRnd.xyz * burst * 1.1;
+          p += aRnd.xyz * .025 * sin(uTime * 1.3 + aRnd.w * 20.);
+          vec4 mv = modelViewMatrix * vec4(p, 1.);
+          gl_Position = projectionMatrix * mv;
+          gl_PointSize = uSize * (.55 + .45 * (aRnd.x * .5 + .5)) / -mv.z;
+          vA = .55 + .45 * (1. - burst);
+          vT = m;
+        }`,
+      fragmentShader: `
+        uniform vec3 uColA; uniform vec3 uColB;
+        varying float vA; varying float vT;
+        void main(){
+          vec2 c = gl_PointCoord - .5;
+          float r = length(c);
+          float a = smoothstep(.5, .0, r);
+          a *= a;
+          vec3 col = mix(uColA, uColB, vT);
+          col = mix(col, vec3(1.), smoothstep(.18, .0, r) * .6);
+          gl_FragColor = vec4(col, a * vA * .9);
+        }`
+    });
+    const points = new THREE.Points(geo, mat);
+    const group = new THREE.Group();
+    group.add(points);
+    scene.add(group);
+
+    // 背景星塵
+    const dust = new Float32Array(900 * 3);
+    for (let i = 0; i < 900; i++) { dust[i * 3] = (R() - .5) * 16; dust[i * 3 + 1] = (R() - .5) * 10; dust[i * 3 + 2] = -R() * 10 - 1; }
+    const dustGeo = new THREE.BufferGeometry(); dustGeo.setAttribute('position', new THREE.BufferAttribute(dust, 3));
+    const dustPts = new THREE.Points(dustGeo, new THREE.PointsMaterial({ size: .03, color: 0x8a86a0, transparent: true, opacity: .5, depthWrite: false }));
+    scene.add(dustPts);
+
+    /* 文字面板 */
+    const textEl = $('#orbitText'), railEl = $('#orbitRail'), numEl = $('#orbitNum');
+    $('#orbitTotal').textContent = String(ORBIT.length).padStart(2, '0');
+    textEl.innerHTML = ORBIT.map((o, i) => `
+      <article class="orbit__card${i === 0 ? ' is-on' : ''}" style="--c:rgb(${o.color.map((v) => Math.round(v * 255)).join(',')})">
+        <span class="orbit__en">${String(i + 1).padStart(2, '0')} — ${o.en}</span>
+        <h3>${o.title}</h3>
+        <p>${o.desc}</p>
+        <ul>${o.tags.map((t) => `<li>${t}</li>`).join('')}</ul>
+      </article>`).join('');
+    railEl.innerHTML = ORBIT.map((o, i) => `<button type="button" data-i="${i}" aria-label="${o.title}"><i></i><span>${o.en}</span></button>`).join('');
+    const cards = $$('.orbit__card', textEl), rails = $$('button', railEl);
+
+    const layout = () => {
+      const w = cv.clientWidth, h = cv.clientHeight;
+      renderer.setSize(w, h, false);
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+      const mobile = w < 900;
+      group.position.set(mobile ? 0 : 1.35, mobile ? .75 : 0, 0);
+      group.scale.setScalar(mobile ? .78 : 1);
+    };
+    layout();
+    window.addEventListener('resize', layout);
+
+    const state = { p: 0, seg: -1, active: 0 };
+    const setSegment = (seg) => {
+      if (seg === state.seg) return;
+      state.seg = seg;
+      geo.setAttribute('aFrom', buffers[seg]);
+      geo.setAttribute('aTo', buffers[Math.min(seg + 1, ORBIT.length - 1)]);
+      mat.uniforms.uColA.value.setRGB(...ORBIT[seg].color);
+      mat.uniforms.uColB.value.setRGB(...ORBIT[Math.min(seg + 1, ORBIT.length - 1)].color);
+    };
+    setSegment(0);
+    const setActive = (i, force) => {
+      if (i === state.active && !force) return;
+      state.active = i;
+      cards.forEach((c, k) => c.classList.toggle('is-on', k === i));
+      rails.forEach((b, k) => { b.classList.toggle('is-on', k === i); b.classList.toggle('is-past', k < i); });
+      numEl.textContent = String(i + 1).padStart(2, '0');
+      section.style.setProperty('--oc', cards[i].style.getPropertyValue('--c'));
+    };
+    setActive(0, true);
+
+    // 捲動進度 → 形狀。每個形狀停一段（hold），中間變形
+    const HOLD = .45;
+    const applyProgress = (p) => {
+      const f = p * (ORBIT.length - 1);
+      const seg = Math.min(Math.floor(f), ORBIT.length - 2);
+      const local = f - seg;
+      const mix = Math.min(Math.max((local - HOLD / 2) / (1 - HOLD), 0), 1);
+      setSegment(seg);
+      mat.uniforms.uMix.value = mix;
+      setActive(Math.round(f));
+      section.style.setProperty('--op', p.toFixed(4));
+    };
+
+    let st = null;
+    if (reduced) {
+      section.classList.add('is-reduced');
+    } else {
+      st = ScrollTrigger.create({
+        trigger: section, start: 'top top', end: () => '+=' + window.innerHeight * ORBIT.length,
+        pin: '.orbit__pin', pinSpacing: true, scrub: true, anticipatePin: 1, invalidateOnRefresh: true, refreshPriority: 1,
+        onUpdate: (self) => { state.p = self.progress; }
+      });
+    }
+    rails.forEach((b) => b.addEventListener('click', () => {
+      const i = +b.dataset.i;
+      if (st) scrollTo(st.start + (st.end - st.start) * (i / (ORBIT.length - 1)) + 70);
+      else { state.p = i / (ORBIT.length - 1); }
+    }));
+
+    // 滑鼠讓模型跟著轉一點
+    const tilt = { x: 0, y: 0, tx: 0, ty: 0 };
+    if (!isTouch) window.addEventListener('mousemove', (e) => { tilt.tx = (e.clientY / window.innerHeight - .5) * .5; tilt.ty = (e.clientX / window.innerWidth - .5) * .7; }, { passive: true });
+
+    let visible = false, smooth = 0, t0 = performance.now();
+    new IntersectionObserver((en) => (visible = en[0].isIntersecting), { rootMargin: '100px' }).observe(cv);
+    const frame = (now) => {
+      requestAnimationFrame(frame);
+      if (!visible) return;
+      const t = (now - t0) / 1000;
+      smooth += (state.p - smooth) * (reduced ? 1 : .09);
+      applyProgress(smooth);
+      tilt.x += (tilt.tx - tilt.x) * .05; tilt.y += (tilt.ty - tilt.y) * .05;
+      const spin = reduced ? 0 : t * .18;
+      group.rotation.set(-.18 + tilt.x + Math.sin(t * .4) * .05, spin + smooth * TAU * 1.5 + tilt.y, Math.sin(t * .3) * .04);
+      dustPts.rotation.y = smooth * .6;
+      mat.uniforms.uTime.value = t;
+      renderer.render(scene, camera);
+    };
+    requestAnimationFrame(frame);
+  })();
+
   window.addEventListener('load', () => ScrollTrigger.refresh());
 })();
