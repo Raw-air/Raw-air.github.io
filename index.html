@@ -1,480 +1,267 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh-Hant">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Raw Air — 把想法，做成看得見的東西</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="only dark">
+<meta name="theme-color" content="#08181B">
+<title>RAW AIR — 把想法，做成看得見的東西</title>
 <meta name="description" content="接案開發：網站與網頁應用、App 開發修復與上架、AI 客服與 LINE / Discord 機器人、自動化、資料報表、接手舊專案。你講需求，我先畫概念圖給你看，再談怎麼做。">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"ProfessionalService","name":"RAW AIR","url":"https://raw-air.github.io/","description":"接案開發：網站、App、AI 機器人、自動化、資料報表、舊專案修復。","areaServed":"TW","availableLanguage":["zh-Hant","en"],"sameAs":["https://github.com/Raw-air"]}</script>
-<meta property="og:title" content="Raw Air — 把想法，做成看得見的東西">
-<meta property="og:description" content="接案開發：網站、App 修復、機器人、自動化。先畫給你看，再談怎麼做。">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://raw-air.github.io/">
-<meta property="og:image" content="https://raw-air.github.io/og.png">
-<meta name="theme-color" content="#0a0a0c">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230a0a0c'/%3E%3Ccircle cx='32' cy='32' r='14' fill='%23ff6b35'/%3E%3Ccircle cx='44' cy='20' r='6' fill='%237c5cff'/%3E%3C/svg%3E">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700;900&family=Noto+Sans+TC:wght@300;400;500;700&family=Instrument+Serif:ital@0;1&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css">
+<meta property="og:title" content="RAW AIR — 把想法，做成看得見的東西">
+<meta property="og:description" content="接案開發：網站、App 修復、機器人、自動化。先畫給你看，再談怎麼做。">
+<meta property="og:image" content="https://raw-air.github.io/og.png?v=3">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="zh_TW">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://raw-air.github.io/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%2308181B'/%3E%3Ccircle cx='16' cy='16' r='7' fill='%23FF5A3C'/%3E%3C/svg%3E">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"ProfessionalService","name":"RAW AIR","url":"https://raw-air.github.io/","description":"接案開發：網站、App、AI 機器人、自動化、資料報表、舊專案修復。","areaServed":"TW","availableLanguage":["zh-Hant"]}</script>
+<style>
+@font-face{font-family:"RawDisplay";font-weight:400;font-display:block;src:url(data:font/woff2;base64,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) format("woff2")}
+</style>
+<link rel="stylesheet" href="css/site.css">
+<script>document.documentElement.classList.add('js')</script>
 </head>
 <body>
+<a class="skip" href="#stuck">跳到內容</a>
+<canvas id="gl" aria-hidden="true"></canvas>
 
-<!-- 載入畫面 -->
-<div class="loader" id="loader" aria-hidden="true">
-  <div class="loader__inner">
-    <div class="loader__brand"><span class="dot"></span>RAW AIR</div>
-    <div class="loader__count"><span id="loaderNum">0</span><i>%</i></div>
-    <div class="loader__bar"><span id="loaderBar"></span></div>
-    <div class="loader__hint">正在把想法變成畫面</div>
+<header class="nav">
+  <a class="brand" href="#top">RAW AIR</a>
+  <div class="nav-r">
+    <a class="t" href="#works">做過的東西</a>
+    <a class="t" href="#price">費用</a>
+    <a class="t" href="#faq">常見問題</a>
+    <button class="mo" data-mo type="button" role="switch" aria-checked="true">動態：開</button>
+    <a class="btn" data-line data-goatcounter-click="qr-open" href="https://line.me/ti/p/~16225113" target="_blank" rel="noopener">用 LINE 問我</a>
   </div>
-  <div class="loader__panel"></div>
-  <div class="loader__panel"></div>
-  <div class="loader__panel"></div>
-</div>
-
-<!-- 自訂游標 -->
-<div class="cursor" id="cursor"><span class="cursor__dot"></span><span class="cursor__ring"><b class="cursor__label"></b></span></div>
-
-<!-- 顆粒質感 -->
-<svg class="grain" aria-hidden="true"><filter id="grainF"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="3" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/></filter><rect width="100%" height="100%" filter="url(#grainF)"/></svg>
-
-<!-- 導覽 -->
-<header class="nav" id="nav">
-  <a class="nav__logo" href="#top" data-magnetic><span class="dot"></span>RAW AIR</a>
-  <nav class="nav__links" aria-label="主要">
-    <a href="#abilities" data-magnetic>能力</a>
-    <a href="#works" data-magnetic>作品</a>
-    <a href="#services" data-magnetic>服務</a>
-    <a href="#capabilities" data-magnetic>能力清單</a>
-    <a href="#process" data-magnetic>流程</a>
-    <a href="#faq" data-magnetic>常見問題</a>
-  </nav>
-  <div class="nav__right">
-    <span class="nav__clock"><i>TPE</i> <b id="clock">--:--</b></span>
-    <a class="btn btn--sm" href="#contact" data-magnetic>聊聊想法</a>
-    <button class="nav__burger" id="burger" aria-label="開啟選單" aria-expanded="false"><span></span><span></span></button>
-  </div>
+  <button id="menuBtn" type="button" aria-expanded="false" aria-controls="menu">選單</button>
 </header>
+<nav id="menu" aria-label="選單">
+  <a href="#works">做過的東西</a>
+  <a href="#concept">概念圖</a>
+  <a href="#process">怎麼合作</a>
+  <a href="#price">費用</a>
+  <a href="#faq">常見問題</a>
+  <a href="#all">全部服務</a>
+  <button class="mo" data-mo type="button" role="switch" aria-checked="true">動態：開</button>
+</nav>
 
-<div class="menu" id="menu" aria-hidden="true">
-  <div class="menu__bg"></div>
-  <div class="menu__inner">
-    <div class="menu__links">
-      <a href="#abilities"><em>00</em>能力 3D</a>
-      <a href="#works"><em>01</em>作品</a>
-      <a href="#concept"><em>02</em>概念圖</a>
-      <a href="#services"><em>03</em>主力服務</a>
-      <a href="#capabilities"><em>04</em>完整能力清單</a>
-      <a href="#process"><em>05</em>流程</a>
-      <a href="#pricing"><em>06</em>價格</a>
-      <a href="#faq"><em>07</em>常見問題</a>
-      <a href="#contact"><em>08</em>聯絡</a>
-    </div>
-    <div class="menu__foot">
-      <span>台北 · 接案中</span>
-      <a href="https://github.com/Raw-air" target="_blank" rel="noopener">GitHub ↗</a>
-    </div>
-  </div>
-</div>
-
-<main id="top">
-
-<!-- ===== HERO ===== -->
-<section class="hero" id="hero">
-  <canvas class="hero__gl" id="gl" aria-hidden="true"></canvas>
-  <div class="hero__fade" aria-hidden="true"></div>
-  <div class="hero__inner">
-    <p class="hero__eyebrow reveal"><span class="status"></span>接案開發 · Freelance Developer · 台北</p>
-    <h1 class="hero__title">
-      <span class="line" data-split>把想法，</span>
-      <span class="line" data-split>做成<em>看得見</em>的東西。</span>
-    </h1>
-    <p class="hero__sub reveal">網站、App 修復與上架、Discord 機器人、自動化系統。<br>你講需求，我先畫概念圖給你看，再談怎麼做。</p>
-    <div class="hero__cta reveal">
-      <a class="btn btn--primary" href="#works" data-magnetic>看作品<svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
-      <a class="btn btn--ghost" href="#concept" data-magnetic>先看你的想法長怎樣</a>
-    </div>
-  </div>
-  <div class="hero__bottom">
-    <div class="hero__scroll"><span></span>往下捲</div>
-    <div class="hero__meta"><b>04</b> 個交付案 · <b class="js-cat-count">12</b> 大類 · <b class="js-cap-count">106</b> 項服務</div>
-  </div>
-</section>
-
-<!-- ===== 跑馬燈 ===== -->
-<div class="marquee" aria-hidden="true">
-  <div class="marquee__track" data-dir="1">
-    <span>網站設計</span><i>✦</i><span>iOS App 修復</span><i>✦</i><span>Discord 機器人</span><i>✦</i><span>進銷存系統</span><i>✦</i><span>資料儀表板</span><i>✦</i><span>自動化流程</span><i>✦</i><span>概念圖</span><i>✦</i><span>原型設計</span><i>✦</i>
-    <span>網站設計</span><i>✦</i><span>iOS App 修復</span><i>✦</i><span>Discord 機器人</span><i>✦</i><span>進銷存系統</span><i>✦</i><span>資料儀表板</span><i>✦</i><span>自動化流程</span><i>✦</i><span>概念圖</span><i>✦</i><span>原型設計</span><i>✦</i>
-  </div>
-</div>
-
-<!-- ===== 宣言 ===== -->
-<section class="manifesto">
-  <p class="manifesto__text" data-words>很多人有想法，但講不清楚要做什麼。所以我做的第一件事不是報價，是把你腦中的畫面畫出來——一張概念圖、一個可以點的原型。你看到它長什麼樣，再決定要不要做、做多少。</p>
-  <div class="manifesto__stats reveal">
-    <div><b data-count="4">0</b><span>個交付案</span></div>
-    <div><b data-count="1985">0</b><span>家上市櫃公司資料接入</span></div>
-    <div><b data-count="106" class="js-cap-stat">0</b><span>項可承接的服務</span></div>
-  </div>
-</section>
-
-<!-- ===== 3D 能力展示（捲動時粒子變形，內容在 js/main.js 的 ORBIT） ===== -->
-<section class="orbit" id="abilities">
-  <div class="orbit__pin">
-    <canvas class="orbit__gl" id="orbitGl" aria-hidden="true"></canvas>
-    <div class="orbit__glow" aria-hidden="true"></div>
-    <div class="orbit__ui">
-      <div class="orbit__head">
-        <span class="orbit__kicker">我能做什麼 · What I build</span>
-        <span class="orbit__count"><b id="orbitNum">01</b> / <i id="orbitTotal">06</i></span>
-      </div>
-      <div class="orbit__text" id="orbitText"></div>
-      <div class="orbit__rail" id="orbitRail"></div>
-    </div>
-    <div class="orbit__hint" aria-hidden="true"><span></span>繼續往下捲，看它變形</div>
-  </div>
-</section>
-
-<!-- ===== 作品 ===== -->
-<section class="works" id="works">
-  <div class="sec-head">
-    <span class="sec-head__num">01</span>
-    <h2 class="sec-head__title" data-split>作品</h2>
-    <span class="sec-head__en">Selected Works</span>
-  </div>
-
-  <!-- 作品 1 -->
-  <article class="work" data-cursor="看看">
-    <div class="work__text">
-      <span class="work__idx">01 / 04</span>
-      <h3 class="work__title">果商進銷管理系統</h3>
-      <p class="work__desc">一個 HTML 檔就是整套系統。果農週結、代售單、籃子庫存、月成本報表，開瀏覽器就能用，不裝軟體、不用網路。舊 Excel 算錯的那格，系統自己會抓出來。</p>
-      <ul class="work__tags"><li>單檔網頁應用</li><li>圖表</li><li>列印單據</li><li>離線可用</li></ul>
-    </div>
-    <div class="work__visual" data-parallax="-6">
-      <div class="mk mk-dash">
-        <div class="mk-dash__side"><i></i><i></i><i></i><i></i><i></i><i></i></div>
-        <div class="mk-dash__main">
-          <div class="mk-dash__top"><span>總覽</span><em>本週 <b>本月</b></em></div>
-          <div class="mk-dash__hero">
-            <small>本月淨利</small>
-            <strong>+<span data-count="128540" data-count-play>0</span></strong>
-            <svg class="mk-dash__donut" viewBox="0 0 80 80"><circle cx="40" cy="40" r="30" class="d0"/><circle cx="40" cy="40" r="30" class="d1"/><circle cx="40" cy="40" r="30" class="d2"/><circle cx="40" cy="40" r="30" class="d3"/><text x="40" y="44">31%</text></svg>
-          </div>
-          <div class="mk-dash__bars"><i style="--h:40%"></i><i style="--h:55%"></i><i style="--h:35%"></i><i style="--h:70%"></i><i style="--h:60%"></i><i style="--h:85%"></i><i style="--h:65%"></i><i style="--h:95%"></i></div>
-          <div class="mk-dash__cells"><span>收貨 <b>12,480 斤</b></span><span>均價 <b>18.6 元</b></span><span>毛利率 <b>31%</b></span><span>週數 <b>3</b></span></div>
-        </div>
-      </div>
-    </div>
-  </article>
-
-  <!-- 作品 2 -->
-  <article class="work work--rev" data-cursor="看看">
-    <div class="work__text">
-      <span class="work__idx">02 / 04</span>
-      <h3 class="work__title">es省電王 iOS App 修復與上架</h3>
-      <p class="work__desc">客戶的 App 錄影後相機打不開、付款頁不見、整包程式編譯不過。找出根因、加上相機自動恢復、對齊訂閱商品、修好上架設定，最後在雲端 Mac 上實際編譯：0 錯誤、0 警告。</p>
-      <ul class="work__tags"><li>Swift / AVFoundation</li><li>StoreKit 訂閱</li><li>GitHub Actions</li><li>App Store 上架</li></ul>
-    </div>
-    <div class="work__visual" data-parallax="6">
-      <div class="mk mk-phone">
-        <div class="mk-phone__frame">
-          <div class="mk-phone__notch"></div>
-          <div class="mk-phone__screen">
-            <div class="mk-phone__rec"><i></i>REC <b>00:12</b></div>
-            <div class="mk-phone__grid"></div>
-            <div class="mk-phone__person"><svg viewBox="0 0 60 120"><circle cx="30" cy="20" r="12"/><path d="M12 60c0-14 8-24 18-24s18 10 18 24v50H12z"/></svg><span class="box"></span></div>
-            <div class="mk-phone__toast">相機已自動恢復</div>
-            <div class="mk-phone__sub"><span>月 NT$299</span><b>年 NT$890 · 省 75%</b></div>
-          </div>
-        </div>
-        <div class="mk-phone__term"><span class="p">$</span> xcodebuild … <br><span class="ok">** BUILD SUCCEEDED **</span> <em>0 errors · 0 warnings</em></div>
-      </div>
-    </div>
-  </article>
-
-  <!-- 作品 3 -->
-  <article class="work" data-cursor="看看">
-    <div class="work__text">
-      <span class="work__idx">03 / 04</span>
-      <h3 class="work__title">台股禿鷹：多 AI 調查系統</h3>
-      <p class="work__desc">在 Discord 打一個股票代號，AI 花 30 天把那間公司挖到見骨，另一個 AI 負責查核，最後產出精華報表、轉入即時追蹤。接了證交所與櫃買中心 1,985 家公司資料，每小時快照、異常偵測。只出情報，不碰下單。</p>
-      <ul class="work__tags"><li>Discord Bot</li><li>TypeScript</li><li>多 Agent 協作</li><li>台股資料層</li></ul>
-    </div>
-    <div class="work__visual" data-parallax="-6">
-      <div class="mk mk-chat">
-        <div class="mk-chat__side"><b># 點單</b><span># 進度</span><span># 報表</span><span># 追蹤</span></div>
-        <div class="mk-chat__main">
-          <div class="msg msg--u"><i></i><div><b>oscar</b><p>/調查 2330</p></div></div>
-          <div class="msg msg--b"><i></i><div><b>台股禿鷹 <small>BOT</small></b><p>收到。台積電，開始 30 天深挖。</p><div class="prog"><span></span></div><p class="dim">第 1 層 · 財報與法說 …</p></div></div>
-          <div class="msg msg--b"><i></i><div><b>台股禿鷹 <small>BOT</small></b><div class="embed"><b>線索 #3</b><p>資本支出年增 42%，與法說口徑不一致，交給審查員複核。</p></div></div></div>
-          <div class="msg msg--b"><i></i><div><b>審查員 <small>BOT</small></b><p>已交叉比對兩份年報。<em>通過。</em></p></div></div>
-        </div>
-      </div>
-    </div>
-  </article>
-
-  <!-- 作品 4 -->
-  <article class="work work--rev" data-cursor="看看">
-    <div class="work__text">
-      <span class="work__idx">04 / 04</span>
-      <h3 class="work__title">付款前安全試用交付</h3>
-      <p class="work__desc">怕交貨不付錢？我把完整系統加密後放上網，客戶拿金鑰就能完整試用，畫面帶「試用版」浮水印。確認功能沒問題再付款、再拿原始檔。要停權，換一把金鑰就好。</p>
-      <ul class="work__tags"><li>AES-GCM 加密</li><li>GitHub Pages</li><li>金鑰入口</li><li>浮水印</li></ul>
-    </div>
-    <div class="work__visual" data-parallax="6">
-      <div class="mk mk-gate">
-        <div class="mk-gate__lock">
-          <svg viewBox="0 0 24 24"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
-          <div class="mk-gate__input"><span class="dots"><i></i><i></i><i></i><i></i><i></i><i></i></span><b>進入</b></div>
-          <small>輸入試用金鑰</small>
-        </div>
-        <div class="mk-gate__app">
-          <div class="wm">DEMO 試用版</div>
-          <div class="row"><i></i><i></i><i></i></div>
-          <div class="row big"><i></i></div>
-          <div class="row"><i></i><i></i></div>
-          <div class="row"><i></i><i></i><i></i><i></i></div>
-          <div class="row"><i></i><i></i></div>
-        </div>
-      </div>
-    </div>
-  </article>
-</section>
-
-<!-- ===== 概念圖實驗室 ===== -->
-<section class="concept" id="concept">
-  <div class="sec-head">
-    <span class="sec-head__num">02</span>
-    <h2 class="sec-head__title" data-split>你講一句話，我畫成這樣</h2>
-    <span class="sec-head__en">Concept Lab</span>
-  </div>
-  <p class="concept__lead reveal">點一個想法試試。這就是我們第一次聊完之後，你會收到的東西：先是線稿，再是有顏色的畫面，旁邊是我會問你的問題。</p>
-  <div class="concept__grid">
-    <div class="concept__ideas" role="tablist" aria-label="想法">
-      <button class="idea is-active" role="tab" data-idea="0" aria-selected="true"><span>「我想要一個記帳 App」</span></button>
-      <button class="idea" role="tab" data-idea="1"><span>「幫我做社團的 Discord 機器人」</span></button>
-      <button class="idea" role="tab" data-idea="2"><span>「我要一個品牌形象網站」</span></button>
-      <button class="idea" role="tab" data-idea="3"><span>「幫我把 Excel 變成系統」</span></button>
-      <div class="concept__notes">
-        <span class="concept__notes-head">需求筆記</span>
-        <ul id="notes"></ul>
-      </div>
-    </div>
-    <div class="concept__stage" id="stage">
-      <div class="concept__phase"><span id="phaseLabel">線稿</span><i></i></div>
-      <div class="concept__canvas" id="canvas"></div>
+<main>
+<section class="hero" id="top" data-stage data-shape="glyph" data-world="hero" data-d=".44,.03,.48,.76,-.26,.12,.015" data-m=".88,-.24,.1,0">
+  <div class="slot" aria-hidden="true"><span class="fb fb-g d">畫</span></div>
+  <div class="hero-t">
+    <p class="svc" data-dim=".05">幫你做網站、修 App、做 LINE 機器人、把重複的工作自動化。</p>
+    <h1 data-dim=".4" aria-label="把想法，做成看得見的東西。"><span aria-hidden="true">把想法<i class="p">，</i></span><span aria-hidden="true">做成看得見的</span><span aria-hidden="true">東西。</span></h1>
+    <p class="sub" data-dim=".05">你講需求，我先畫概念圖給你看，再談怎麼做。</p>
+    <div class="cta" id="heroCta" data-dim=".05">
+      <a class="btn" data-line data-goatcounter-click="line-hero" href="https://line.me/ti/p/~16225113" target="_blank" rel="noopener">用 LINE 問我</a>
+      <a class="alt" href="#works">看做過的東西</a>
     </div>
   </div>
 </section>
 
-<!-- ===== 能做的事 ===== -->
-<section class="services" id="services">
-  <div class="sec-head">
-    <span class="sec-head__num">03</span>
-    <h2 class="sec-head__title" data-split>主力服務</h2>
-    <span class="sec-head__en">Services</span>
-  </div>
-  <div class="bento">
-    <div class="tile tile--wide" data-tilt>
-      <svg class="tile__icon" viewBox="0 0 48 48"><rect x="6" y="10" width="36" height="26" rx="4"/><path d="M6 18h36M14 14h.01M19 14h.01"/><path class="draw" d="M14 26h10M14 30h20"/></svg>
-      <h3>網站與網頁應用</h3>
-      <p>形象網站、活動頁、進銷存、內部工具。純前端做到能離線用，也能接後端、接資料庫。</p>
-      <span class="tile__tag">HTML / JS / React / Node</span>
-    </div>
-    <div class="tile" data-tilt>
-      <svg class="tile__icon" viewBox="0 0 48 48"><rect x="14" y="4" width="20" height="40" rx="4"/><path d="M20 8h8"/><circle class="pulse" cx="24" cy="26" r="6"/></svg>
-      <h3>App 修復與上架</h3>
-      <p>接手別人寫壞的 iOS / Android 專案，找根因、修到能編譯、能上架。</p>
-      <span class="tile__tag">Swift / Kotlin / CI</span>
-    </div>
-    <div class="tile" data-tilt>
-      <svg class="tile__icon" viewBox="0 0 48 48"><rect x="8" y="14" width="32" height="24" rx="6"/><path d="M24 6v8M16 6h16"/><circle cx="18" cy="26" r="2.5" class="eye"/><circle cx="30" cy="26" r="2.5" class="eye"/><path d="M18 33h12"/></svg>
-      <h3>Discord / LINE 機器人</h3>
-      <p>指令、按鈕面板、排程、通知、接 AI。社團管理到自動客服都能做。</p>
-      <span class="tile__tag">discord.js / LINE API</span>
-    </div>
-    <div class="tile" data-tilt>
-      <svg class="tile__icon" viewBox="0 0 48 48"><path class="spin" d="M24 8a16 16 0 1 1-11.3 4.7"/><path d="M8 8v10h10"/><path d="M18 26l4 4 8-8"/></svg>
-      <h3>自動化與資料處理</h3>
-      <p>每天重複做的事交給程式：抓資料、整理報表、定時通知、批次處理。</p>
-      <span class="tile__tag">Python / Node / 排程</span>
-    </div>
-    <div class="tile tile--wide tile--accent" data-tilt>
-      <svg class="tile__icon" viewBox="0 0 48 48"><path class="draw" d="M8 36c6-14 14-22 32-28"/><path d="M8 36l6-2-4-4z"/><rect x="26" y="20" width="14" height="10" rx="2" class="fade"/></svg>
-      <h3>概念圖與可點原型</h3>
-      <p>你還說不清楚的時候，我先畫。線稿 → 彩稿 → 可以點的原型，讓你看到再決定。這一步通常是省最多錢的一步。</p>
-      <span class="tile__tag">Figma / HTML 原型</span>
-    </div>
-    <div class="tile" data-tilt>
-      <svg class="tile__icon" viewBox="0 0 48 48"><path d="M24 4l16 6v12c0 10-7 18-16 22C15 40 8 32 8 22V10z"/><path class="draw" d="M17 24l5 5 9-10"/></svg>
-      <h3>安全檢查與交付</h3>
-      <p>接手的程式先掃一遍：有沒有後門、對外連線、明文密碼。交付時附檢查報告。</p>
-      <span class="tile__tag">靜態分析 / 加密交付</span>
-    </div>
-  </div>
-</section>
-
-<!-- ===== 完整能力清單（內容在 js/main.js 的 CAPS） ===== -->
-<section class="caps" id="capabilities">
-  <div class="sec-head">
-    <span class="sec-head__num">04</span>
-    <h2 class="sec-head__title" data-split>完整能力清單</h2>
-    <span class="sec-head__en">Capabilities</span>
-  </div>
-  <div class="caps__intro">
-    <p class="caps__lead reveal">上面是主力，這裡是全部。從一頁網站到 AI 客服、從修一個 bug 到接手整個爛尾專案，<b class="js-cat-count">12</b> 大類、<b class="js-cap-count">106</b> 項。找不到你要的？直接問，多半也能做。</p>
-    <label class="caps__search reveal">
-      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
-      <input id="capSearch" type="search" placeholder="搜尋，例如：LINE、Excel、上架、爬蟲" autocomplete="off">
-    </label>
-  </div>
-  <div class="caps__grid">
-    <div class="caps__cats" id="capCats" role="tablist" aria-label="服務分類"></div>
-    <div class="caps__panel" id="capPanel" aria-live="polite">
-      <div class="caps__head">
-        <div>
-          <span class="caps__en" id="capEn"></span>
-          <h3 class="caps__title" id="capTitle"></h3>
-          <p class="caps__blurb" id="capBlurb"></p>
-        </div>
-        <a class="btn btn--sm" href="#contact" data-magnetic>這類需求找我<svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
-      </div>
-      <ol class="caps__list" id="capList"></ol>
-    </div>
-  </div>
-  <div class="caps__stack reveal" aria-label="常用技術">
-    <span>常用技術</span>
-    <ul>
-      <li>HTML / CSS</li><li>JavaScript</li><li>TypeScript</li><li>React</li><li>Next.js</li><li>Vue</li><li>Node.js</li><li>Python</li><li>Go</li><li>PHP</li><li>Swift</li><li>Kotlin</li><li>Flutter</li><li>PostgreSQL</li><li>MySQL</li><li>Firebase</li><li>Supabase</li><li>Docker</li><li>GitHub Actions</li><li>Cloudflare</li><li>Playwright</li><li>Claude / OpenAI API</li>
-    </ul>
-  </div>
-</section>
-
-<!-- ===== 流程 ===== -->
-<section class="process" id="process">
-  <div class="sec-head">
-    <span class="sec-head__num">05</span>
-    <h2 class="sec-head__title" data-split>怎麼合作</h2>
-    <span class="sec-head__en">Process</span>
-  </div>
-  <div class="process__pin">
-    <div class="process__track" id="ptrack">
-      <div class="step">
-        <span class="step__num">01</span>
-        <h3>聊</h3>
-        <p>你用自己的話講，不用懂技術。我會問「這個東西誰在用、什麼時候用、最怕什麼出錯」。</p>
-        <em>30 分鐘</em>
-      </div>
-      <div class="step">
-        <span class="step__num">02</span>
-        <h3>畫</h3>
-        <p>把聊到的東西畫成概念圖跟需求筆記。你看到畫面，才知道自己真正要什麼。這時候改，最便宜。</p>
-        <em>1 – 3 天</em>
-      </div>
-      <div class="step">
-        <span class="step__num">03</span>
-        <h3>做</h3>
-        <p>確認範圍、報價、開工。過程中會有可以點的版本讓你邊看邊給意見，不會做完才發現不對。</p>
-        <em>依範圍</em>
-      </div>
-      <div class="step">
-        <span class="step__num">04</span>
-        <h3>交</h3>
-        <p>先給加密試用版確認，付款後拿原始檔、說明文件、安全檢查報告。之後要改，再聊。</p>
-        <em>交付 + 說明</em>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ===== 價格 ===== -->
-<section class="pricing" id="pricing">
-  <div class="pricing__inner">
-    <span class="sec-head__num">06</span>
-    <h2 class="pricing__title"><span data-split>價格，另談。</span><em>Let's talk.</em></h2>
-    <p class="pricing__lead reveal">沒有價目表，因為沒有兩個案子是一樣的。把需求講清楚，我會給你一個範圍、一個時程，然後一起把它壓到合理。</p>
-    <div class="pricing__cards">
-      <div class="pcard reveal">
-        <b>範圍</b>
-        <p>要幾個畫面、接不接後端、有沒有登入。範圍越清楚，價格越準。</p>
-      </div>
-      <div class="pcard reveal">
-        <b>時間</b>
-        <p>急件可以，但會影響價格。不急的話我會排在品質優先的節奏。</p>
-      </div>
-      <div class="pcard reveal">
-        <b>之後</b>
-        <p>做完要不要維護、要不要教你自己改。這些都先講，不會事後加價。</p>
-      </div>
-    </div>
-    <a class="btn btn--primary btn--lg reveal" href="#contact" data-magnetic>把需求丟給我<svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
-  </div>
-</section>
-
-<!-- ===== 每個案子都會拿到 ===== -->
-<section class="deliver">
-  <div class="sec-head">
-    <span class="sec-head__num">—</span>
-    <h2 class="sec-head__title" data-split>每個案子都會拿到</h2>
-    <span class="sec-head__en">What you get</span>
-  </div>
-  <ul class="deliver__list">
-    <li class="reveal"><b>01</b><h3>需求筆記</h3><p>聊完整理成文字，範圍寫清楚，之後驗收照這份對。</p></li>
-    <li class="reveal"><b>02</b><h3>試用版</h3><p>付尾款前先完整試用，確認功能沒問題。</p></li>
-    <li class="reveal"><b>03</b><h3>原始碼</h3><p>付清後完整交付，含版本紀錄，換人接手也看得懂。</p></li>
-    <li class="reveal"><b>04</b><h3>說明文件</h3><p>怎麼用、怎麼改、怎麼重新上線，白話寫。</p></li>
-    <li class="reveal"><b>05</b><h3>安全檢查報告</h3><p>有沒有明文密碼、可疑連線、過期套件，掃過才交。</p></li>
-    <li class="reveal"><b>06</b><h3>進度可見</h3><p>開發中就有可以點的版本，不會做完才發現不對。</p></li>
+<span class="alias" id="abilities"></span><span class="alias" id="services"></span>
+<section class="sec" id="stuck" data-stage data-shape="crack" data-world="stuck" data-d=".44,0,.42,.76,-.24,.1,.05" data-m=".98,-.22,.1,.04">
+  <h2 data-dim=".2">你現在卡在哪</h2>
+  <div class="slot" aria-hidden="true"><svg class="fb" data-fb="crack" viewBox="0 0 200 320"><rect x="40" y="10" width="120" height="300" rx="22"/><path class="hot" d="M118 120l24-40-6-26 18-34M118 120l-10-34-22-14-8-52M118 120l34 10M118 120l-18 30-34-8-26 22M118 120l14 56-14 34 24 44-8 46M118 120l-14 54-30 46 10 80"/></svg><svg class="fb" data-fb="ledger" hidden viewBox="0 0 340 230"><path d="M170 34C130 12 60 12 14 30v180c46-18 116-18 156 4 40-22 110-22 156-4V30C280 12 210 12 170 34z"/><path d="M170 34v180M36 70c40-10 90-10 118 4M36 110c40-10 90-10 118 4M36 150c40-10 90-10 118 4M186 74c28-14 78-14 118-4M186 114c28-14 78-14 118-4M186 154c28-14 78-14 118-4"/><circle class="hot" cx="258" cy="132" r="6"/></svg><svg class="fb" data-fb="loop" hidden viewBox="0 0 240 240"><path d="M196 92a84 84 0 0 0-152-16M44 148a84 84 0 0 0 152 16"/><path class="hot" d="M44 44v34h34M196 196v-34h-34"/></svg><svg class="fb" data-fb="bulb" hidden viewBox="0 0 200 300"><path d="M66 196c-2-26-36-40-36-90a70 70 0 0 1 140 0c0 50-34 64-36 90zM70 222h60M76 248h48"/><path class="hot" d="M82 196l-8-74 14 14 12-22 12 22 14-14-8 74"/></svg><svg class="fb" data-fb="lock" hidden viewBox="0 0 260 300"><rect x="30" y="130" width="170" height="150" rx="20"/><path d="M60 130V86a55 55 0 0 1 110 0v44"/><circle class="hot" cx="115" cy="190" r="14"/><path class="hot" d="M115 204v34"/></svg><svg class="fb" data-fb="bubble" hidden viewBox="0 0 320 240"><path d="M60 20h200a44 44 0 0 1 44 44v86a44 44 0 0 1-44 44H130l-58 40 12-40H60a44 44 0 0 1-44-44V64a44 44 0 0 1 44-44z"/><circle cx="100" cy="106" r="16"/><circle cx="160" cy="106" r="16"/><circle class="hot" cx="220" cy="106" r="16"/></svg></div>
+  <p class="hint" data-dim=".06">點你的狀況，圖會跟著換。</p>
+  <ul class="pick" id="pick" data-dim=".06">
+    <li class="sel"><button type="button" data-pick="crack" aria-pressed="true">前一個工程師不見了、程式沒人看得懂、一改就壞？從這裡接。</button><div class="pay"><p>先健檢，評估修還是重寫比較划算。</p><a class="tl" data-line data-goatcounter-click="line-stuck" href="https://line.me/ti/p/~16225113" target="_blank" rel="noopener">這個狀況，用 LINE 問我</a></div></li>
+    <li><button type="button" data-pick="ledger" aria-pressed="false">資料亂、報表手做、單據手打？整理成一鍵產出。</button><div class="pay"><p>欄位跟原本一樣，但自動加總、自動防錯。</p><a class="tl" data-line data-goatcounter-click="line-stuck" href="https://line.me/ti/p/~16225113" target="_blank" rel="noopener">這個狀況，用 LINE 問我</a></div></li>
+    <li><button type="button" data-pick="loop" aria-pressed="false">每天重複在做的事，寫成程式讓它自己跑。</button><div class="pay"><p>重複點網頁、填表、下載報表，交給程式做。</p><a class="tl" data-line data-goatcounter-click="line-stuck" href="https://line.me/ti/p/~16225113" target="_blank" rel="noopener">這個狀況，用 LINE 問我</a></div></li>
+    <li><button type="button" data-pick="bulb" aria-pressed="false">還說不清楚要什麼的時候，先畫出來。</button><div class="pay"><p>聊完後先看到畫面長怎樣。</p><a class="tl" data-line data-goatcounter-click="line-stuck" href="https://line.me/ti/p/~16225113" target="_blank" rel="noopener">這個狀況，用 LINE 問我</a></div></li>
+    <li><button type="button" data-pick="lock" aria-pressed="false">外包交回來的東西能不能信？上線前先檢查。</button><div class="pay"><p>幫你看別人寫的程式：品質、隱憂、該先修什麼。</p><a class="tl" data-line data-goatcounter-click="line-stuck" href="https://line.me/ti/p/~16225113" target="_blank" rel="noopener">這個狀況，用 LINE 問我</a></div></li>
+    <li><button type="button" data-pick="bubble" aria-pressed="false">把 AI 放進你的工作流程：自動回客人、讀文件、查資料、做研究。</button><div class="pay"><p>讀你的常見問題和產品資料來回答客人，答不出來轉真人。</p><a class="tl" data-line data-goatcounter-click="line-stuck" href="https://line.me/ti/p/~16225113" target="_blank" rel="noopener">這個狀況，用 LINE 問我</a></div></li>
   </ul>
 </section>
 
-<!-- ===== 常見問題 ===== -->
-<section class="faq" id="faq">
-  <div class="sec-head">
-    <span class="sec-head__num">07</span>
-    <h2 class="sec-head__title" data-split>常見問題</h2>
-    <span class="sec-head__en">FAQ</span>
-  </div>
-  <div class="faq__list">
-    <details class="reveal" open><summary>我完全不懂技術，可以找你嗎？</summary><div class="faq__body"><div><p>可以，而且多數客人都是這樣。你用自己的話講要解決什麼問題，我會問問題、畫概念圖，把它翻譯成可以做的東西。</p></div></div></details>
-    <details class="reveal"><summary>大概多久可以做好？</summary><div class="faq__body"><div><p>看範圍。小工具、單頁網站、修一個 bug 通常比較快；有登入、有後台、要串金流的系統就要比較久。第一次聊完、範圍確定後，會給你明確的時程。</p></div></div></details>
-    <details class="reveal"><summary>怎麼付款？會不會付了錢拿不到東西？</summary><div class="faq__body"><div><p>可以分階段付款。做完先給你加密試用版，完整操作確認沒問題，再付尾款、拿原始碼。雙方都有保障。</p></div></div></details>
-    <details class="reveal"><summary>做好之後，程式是誰的？</summary><div class="faq__body"><div><p>付清後原始碼完整交給你，含說明文件。你要自己改、找別人維護、搬到別的主機都可以。</p></div></div></details>
-    <details class="reveal"><summary>交付後壞了、想改怎麼辦？</summary><div class="faq__body"><div><p>交付後的小修正範圍，報價時就會寫清楚。要長期維護或加新功能，可以另外談月費或按次計。</p></div></div></details>
-    <details class="reveal"><summary>只修一個小問題也可以嗎？</summary><div class="faq__body"><div><p>可以。網站跑版、App 編譯不過、Excel 公式壞掉、機器人不回話，這種單點問題也接。</p></div></div></details>
-    <details class="reveal"><summary>別人做到一半的專案可以接嗎？</summary><div class="faq__body"><div><p>可以。先做一次程式健檢：看懂架構、列出問題、評估修還是重寫比較划算，再決定要不要繼續。</p></div></div></details>
-    <details class="reveal"><summary>全程遠端嗎？</summary><div class="faq__body"><div><p>是，遠端為主，台灣時區。用 LINE、Email 或視訊溝通，進度用可以點的版本給你看。</p></div></div></details>
-    <details class="reveal"><summary>有不接的案子嗎？</summary><div class="faq__body"><div><p>有。違法、侵權、盜版、遊戲外掛、灌量假帳號、未經同意蒐集個資、詐騙與賭博相關，一律不接。</p></div></div></details>
-  </div>
+<div id="works">
+<section class="sec" id="ledger" data-stage data-shape="ledger" data-world="ledger" data-d=".42,.02,.5,.86,-.2,-.62,.06" data-m="1.02,-.18,-.5,.05">
+  <span class="kicker" data-dim=".05">做過的東西</span>
+  <h2 data-dim=".2">果商進銷<wbr>管理系統</h2>
+  <div class="slot" aria-hidden="true"><svg class="fb" viewBox="0 0 340 230"><path d="M170 34C130 12 60 12 14 30v180c46-18 116-18 156 4 40-22 110-22 156-4V30C280 12 210 12 170 34z"/><path d="M170 34v180M36 70c40-10 90-10 118 4M36 110c40-10 90-10 118 4M36 150c40-10 90-10 118 4M186 74c28-14 78-14 118-4M186 114c28-14 78-14 118-4M186 154c28-14 78-14 118-4"/><circle class="hot" cx="258" cy="132" r="6"/></svg></div>
+  <p class="lead" data-dim=".05">果農週結、代售單、籃子庫存、月成本報表，開瀏覽器就能用，不裝軟體。</p>
+  <ul class="notes" data-dim=".05">
+    <li>出貨單、對帳單，資料填好直接印。</li>
+  </ul>
 </section>
 
-<!-- ===== 聯絡 ===== -->
-<section class="contact" id="contact">
-  <canvas class="contact__gl" id="contactGl" aria-hidden="true"></canvas>
-  <div class="contact__inner">
-    <p class="contact__eyebrow reveal"><span class="status"></span>目前接案中 · 通常 24 小時內回覆</p>
-    <h2 class="contact__title"><span data-split>聊聊你的想法</span></h2>
-    <div class="contact__actions reveal" id="contactActions">
-      <a class="btn btn--primary btn--lg" href="https://github.com/Raw-air" target="_blank" rel="noopener" data-magnetic>GitHub<svg viewBox="0 0 24 24"><path d="M7 17L17 7M8 7h9v9"/></svg></a>
+<section class="sec r beat" id="broken" data-stage data-shape="crack" data-world="crack" data-d="-.48,0,.42,.82,.24,.1,.05" data-m=".98,.22,.1,.04">
+  <h2 data-dim=".2">iOS App 修復</h2>
+  <div class="slot" aria-hidden="true"><svg class="fb" viewBox="0 0 200 320"><rect x="40" y="10" width="120" height="300" rx="22"/><path class="hot" d="M118 120l24-40-6-26 18-34M118 120l-10-34-22-14-8-52M118 120l34 10M118 120l-18 30-34-8-26 22M118 120l14 56-14 34 24 44-8 46M118 120l-14 54-30 46 10 80"/></svg></div>
+  <p class="lead" data-dim=".05">客戶的 App 錄影後相機打不開、付款頁不見，整包程式也做不出新版（編譯不過）。</p>
+</section>
+<section class="sec r beat" id="fixedb" data-stage data-shape="fixed" data-world="fixed" data-d="-.48,0,.42,.82,.2,.08,.02" data-m=".98,.18,.08,.02">
+  <h2 data-dim=".2">修到能編譯</h2>
+  <div class="slot" aria-hidden="true"><svg class="fb" viewBox="0 0 200 320"><rect x="40" y="10" width="120" height="300" rx="22"/><circle cx="100" cy="150" r="52"/><path class="hot" d="M74 150l20 22 34-46"/></svg></div>
+  <p class="lead" data-dim=".05">相機打不開，現在會自動恢復。<wbr>付款頁不見，是訂閱商品沒對上，重新對好。<wbr>做不出新版的問題，修到在雲端 Mac 上實際編譯通過。</p>
+  <ul class="notes" data-dim=".05"><li>上架要用的設定也一起修好。</li><li>看錯誤紀錄找真正的原因，不是只把錯誤藏起來。</li></ul>
+</section>
+
+<section class="sec" id="vulture" data-stage data-shape="ticker" data-world="ticker" data-d=".42,.03,.5,.8,-.26,-.82,.08" data-m="1,-.24,-.78,.06">
+  <h2 data-dim=".2">台股禿鷹</h2>
+  <p class="lead" data-dim=".05">在 Discord 打一個股票代號，AI 調查那間公司，另一個 AI 負責查核，最後產出精華報表、轉入即時追蹤。</p>
+  <p class="must" data-dim=".05">只出情報，不碰下單。</p>
+  <div class="slot" aria-hidden="true"><svg class="fb" viewBox="0 0 320 200"><path d="M10 170l70-130h160l70 130zM50 170l50-130M110 170l20-130M170 170V40M230 170l-20-130M290 170l-50-130M36 120h248M58 80h204"/><circle class="hot" cx="184" cy="96" r="6"/></svg></div>
+  <p class="body" data-dim=".05">只做資料蒐集與分析工具，不提供投資建議。</p>
+</section>
+</div>
+
+<section class="sec r" id="trial" data-stage data-shape="lock" data-world="lock" data-d="-.46,0,.54,.86,.24,.1,-.03" data-m=".98,.22,.1,-.03">
+  <h2 data-dim=".2">尾款前<i class="p">，</i><wbr>先完整試用</h2>
+  <div class="slot" aria-hidden="true"><svg class="fb" viewBox="0 0 260 300"><rect x="30" y="130" width="170" height="150" rx="20"/><path d="M60 130V86a55 55 0 0 1 110 0v44"/><circle class="hot" cx="115" cy="190" r="14"/><path class="hot" d="M115 204v34"/></svg></div>
+  <p class="lead" data-dim=".05">做完先給你<wbr>一個上鎖的試用版，完整操作確認沒問題，再付尾款、拿原始碼。</p>
+  <p class="body" data-dim=".05">付清後原始碼完整交給你，含說明文件。你要自己改、找別人維護、搬到別的主機都可以。</p>
+</section>
+
+<section class="sec" id="concept" data-stage data-shape="app" data-world="concept" data-d=".46,0,.42,.78,-.24,.08,.03" data-m=".98,-.22,.08,.03">
+  <h2 data-dim=".2">你講一句話<i class="p">，</i><wbr>我畫成這樣</h2>
+  <div class="slot" aria-hidden="true"><svg class="fb" viewBox="0 0 200 320"><rect x="40" y="10" width="120" height="300" rx="22"/><circle cx="100" cy="150" r="52"/><path class="hot" d="M74 150l20 22 34-46"/></svg></div>
+  <p class="lead" data-dim=".05">很多人有想法，但講不清楚要做什麼。點一個想法試試。</p>
+  <div id="ideas" data-dim=".05">
+    <button type="button" data-pick="app" aria-pressed="true">我想要一個記帳 App</button>
+    <button type="button" data-pick="bubble" aria-pressed="false">幫我做社團的 Discord 機器人</button>
+    <button type="button" data-pick="window" aria-pressed="false">我要一個品牌形象網站</button>
+    <button type="button" data-pick="ledger" aria-pressed="false">幫我把 Excel 變成系統</button>
+  </div>
+  <div data-dim=".05">
+  <span class="tag">示範，不是客戶案例</span>
+  <div class="mocks">
+    <div class="mock">
+      <span class="m-note">示意畫面，資料為範例</span>
+      <div class="m-head"><span>我的記帳本</span><span>11 月</span></div>
+      <p class="m-sub">本月還能花</p><p class="m-big">NT$ 18,240</p>
+      <div class="m-tags"><span>餐飲</span><span>交通</span><span>娛樂</span></div>
+      <div class="m-row"><span>午餐 便當</span><span>-120</span></div>
+      <div class="m-row"><span>捷運</span><span>-35</span></div>
+      <div class="m-row"><span>薪水入帳</span><span>+48,000</span></div>
+    </div>
+    <div class="mock">
+      <span class="m-note">示意畫面，資料為範例</span>
+      <div class="m-head"><span># 社團頻道</span><span>/排班 本週</span></div>
+      <p class="m-line"><b>本週排班表</b></p>
+      <div class="m-row"><span>週一</span><span>小明</span></div>
+      <div class="m-row"><span>週二</span><span>阿華</span></div>
+      <div class="m-row"><span>週三</span><span>小美</span></div>
+      <div class="m-acts"><span class="m-b">我要換班</span><span class="m-b">看全部</span></div>
+    </div>
+    <div class="mock">
+      <span class="m-note">示意畫面，資料為範例</span>
+      <div class="m-head"><span>好咖啡</span><span>聯絡</span></div>
+      <p class="m-big">好咖啡，不用等。</p>
+      <p class="m-sub">台北東區 · 自家烘焙 · 每日現烤</p>
+      <div class="m-acts"><span class="m-b">看菜單</span></div>
+      <p class="m-sub">LINE、電話、地圖</p>
+    </div>
+    <div class="mock">
+      <span class="m-note">示意畫面，資料為範例</span>
+      <div class="m-tiles"><span>本月進貨<b>12,000</b></span><span>本月售出<b>18,000</b></span><span>毛利<b>6,000</b></span></div>
+      <div class="m-table"><span class="h">品項</span><span class="h">數量</span><span class="h">金額</span><span>原子筆</span><span>200</span><span>2,000</span><span>筆記本</span><span>100</span><span>3,000</span><span>資料夾</span><span>50</span><span>1,000</span></div>
+      <div class="m-acts"><span class="m-b">列印</span><span class="m-b">存 PDF</span><span class="m-b">匯入 Excel</span></div>
     </div>
   </div>
+  <ul class="idea-notes on"><li>手機優先，單手就能操作</li><li>一鍵記一筆，三秒完成</li><li>月報表自動產生，不用手算</li><li>資料存在手機裡，不用註冊帳號</li></ul>
+  <ul class="idea-notes"><li>斜線指令：/排班 /抽獎 /公告</li><li>按鈕面板，成員不用打字</li><li>管理員功能只有管理員看得到</li><li>24 小時掛在雲端，不用開電腦</li></ul>
+  <ul class="idea-notes"><li>首頁 5 秒講清楚你是誰</li><li>作品和照片用大圖說話</li><li>手機打開一樣好看</li><li>一鍵聯絡：LINE、電話、地圖</li></ul>
+  <ul class="idea-notes"><li>欄位跟你的 Excel 一模一樣，不用重學</li><li>自動加總</li><li>一鍵列印、存 PDF</li><li>舊資料一次匯入，不用重打</li></ul>
+  </div>
+  <p class="body" data-dim=".05">你看到它長什麼樣，再決定要不要做、做多少。</p>
 </section>
 
+<div class="paper-wrap" id="paper">
+<div class="paper-bg"></div>
+<section class="sec" id="process" data-stage data-fix data-shape="grid" data-wave=".05" data-dimp="1" data-world="concept" data-d=".62,.3,.8,.9,-.2,-1.18,.05" data-m="1.5,-.2,-1.2,.05,.86,1.6,.6">
+  <h2 data-dim=".12">怎麼合作</h2>
+  <ol class="steps" data-dim=".06">
+    <li><span class="d">聊</span><span>你用自己的話講，不用懂技術。我會問「這個東西誰在用、什麼時候用、最怕什麼出錯」。</span></li>
+    <li><span class="d">畫</span><span>把聊到的東西<wbr>畫成概念圖<wbr>跟需求筆記。<wbr>你看到畫面，<wbr>才知道自己<wbr>真正要什麼。<wbr>這時候改，<wbr>最便宜。</span></li>
+    <li><span class="d">做</span><span>確認範圍、報價、開工。需要時會有<wbr>可以點的版本<wbr>讓你邊看邊給意見，不會做完才發現不對。</span></li>
+    <li><span class="d">交</span><span>依案子範圍，先給<wbr>上鎖的試用版確認，付清後拿原始檔、說明文件、安全檢查報告。之後要改，再聊。</span></li>
+  </ol>
+  <h3 class="h-sub">依案子範圍，通常會拿到</h3>
+  <ul class="gets" data-dim=".06">
+    <li><b>需求筆記</b>聊完整理成文字，範圍寫清楚，之後驗收照這份對。</li>
+    <li><b>試用版</b>付尾款前先完整試用，確認功能沒問題。</li>
+    <li><b>原始碼</b>付清後完整交付，含版本紀錄，換人接手也看得懂。</li>
+    <li><b>說明文件</b>怎麼用、怎麼改、怎麼重新上線，白話寫。</li>
+    <li><b>安全檢查報告</b>有沒有把密碼直接寫在程式裡、可疑連線、太舊的元件，掃過才交。</li>
+    <li><b>進度可見</b>開發中就有可以點的版本，不會做完才發現不對。</li>
+  </ul>
+</section>
+<span class="alias" id="pricing"></span>
+<section class="sec" id="price" data-stage data-fix data-shape="grid" data-wave=".05" data-dimp="1" data-world="concept" data-d=".62,.3,.8,.9,-.1,-1.22,-.05" data-m="1.5,-.1,-1.22,-.05,.88,1.6,.6">
+  <h2 data-dim=".12">價格<i class="p">，</i>另談。</h2>
+  <p class="lead" data-dim=".06">沒有價目表，因為沒有兩個案子是一樣的。把需求講清楚，我會給你一個範圍、一個時程，然後一起把它壓到合理。</p>
+  <ul class="price3" data-dim=".06">
+    <li><b>範圍</b>要幾個畫面、接不接後端、有沒有登入。範圍越清楚，價格越準。</li>
+    <li><b>時間</b>急件可以，但會影響價格。不急的話我會排在品質優先的節奏。</li>
+    <li><b>之後</b>做完要不要維護、要不要教你自己改。這些都先講。</li>
+  </ul>
+  <a class="tl" data-line data-goatcounter-click="line-price" href="https://line.me/ti/p/~16225113" target="_blank" rel="noopener">用 LINE 問我</a>
+</section>
+<section class="sec" id="faq" data-stage data-fix data-shape="grid" data-wave=".04" data-dimp=".7" data-world="concept" data-d=".62,.3,.8,.9,-.3,-1.2,.1" data-m="1.5,-.3,-1.25,.1,.92,1.6,.6">
+  <h2 data-dim=".12">找外包前<wbr>該問的問題<i class="p">，</i><wbr>我先答</h2>
+  <div class="faq" data-dim=".06">
+    <details name="faq" open><summary>做好之後，程式是誰的？</summary><p>付清後原始碼完整交給你，含說明文件。你要自己改、找別人維護、搬到別的主機都可以。</p></details>
+    <details name="faq"><summary>怎麼付款？會不會付了錢拿不到東西？</summary><p>可以分階段付款。做完先給你<wbr>一個上鎖的試用版，完整操作確認沒問題，再付尾款、拿原始碼。</p></details>
+    <details name="faq"><summary>交付後壞了、想改怎麼辦？</summary><p>交付後的小修正範圍，報價時就會寫清楚。要長期維護或加新功能，可以另外談月費或按次計。</p></details>
+    <details name="faq"><summary>只修一個小問題也可以嗎？</summary><p>可以。網站跑版、App 編譯不過、Excel 公式壞掉、機器人不回話，這種單點問題也接。</p></details>
+    <details name="faq"><summary>我完全不懂技術，可以找你嗎？</summary><p>可以。你用自己的話講要解決什麼問題，我會問問題、畫概念圖，把它翻譯成可以做的東西。</p></details>
+    <details name="faq"><summary>大概多久可以做好？</summary><p>看範圍。小工具、單頁網站、修一個 bug 通常比較快；有登入、有後台、要串金流的系統就要比較久。第一次聊完、範圍確定後，會給你明確的時程。</p></details>
+    <details name="faq"><summary>別人做到一半的專案可以接嗎？</summary><p>可以。先做一次程式健檢：看懂架構、列出問題、評估修還是重寫比較划算，再決定要不要繼續。</p></details>
+    <details name="faq"><summary>全程遠端嗎？</summary><p>是，遠端為主，台灣時區。用 LINE 或視訊溝通，需要時用可以點的版本給你看進度。</p></details>
+    <details name="faq"><summary>有不接的案子嗎？</summary><p>有。違法、侵權、盜版、遊戲外掛、灌量假帳號、未經同意蒐集個資、詐騙與賭博相關，一律不接。</p></details>
+  </div>
+</section>
+</div>
+
+<span class="alias" id="contact"></span>
+<section class="close" id="line" data-stage data-shape="bubble" data-world="close" data-d=".48,.0,.48,.8,-.2,.1,-.03" data-m="1,-.2,.1,-.03">
+  <h2 data-dim=".2">你用自己的話講<i class="p">，</i><wbr>不用懂技術。</h2>
+  <div class="slot" aria-hidden="true"><svg class="fb" viewBox="0 0 320 240"><path d="M60 20h200a44 44 0 0 1 44 44v86a44 44 0 0 1-44 44H130l-58 40 12-40H60a44 44 0 0 1-44-44V64a44 44 0 0 1 44-44z"/><circle cx="100" cy="106" r="16"/><circle cx="160" cy="106" r="16"/><circle class="hot" cx="220" cy="106" r="16" style="stroke:#06C755"/></svg></div>
+  <a class="btn" id="closeCta" data-line data-goatcounter-click="line-close" href="https://line.me/ti/p/~16225113" target="_blank" rel="noopener">用 LINE 問我</a>
+  <div class="lid" data-dim=".05"><span>LINE ID <span class="id">16225113</span></span><button class="copy" type="button" aria-live="polite" data-copy="16225113" data-goatcounter-click="copy-id">複製 ID</button></div>
+  <div class="qrw" data-dim=".05"><svg viewBox="0 0 37 37" role="img" aria-label="LINE QR Code" shape-rendering="crispEdges"><path fill="#000" d="M4 4h1v1h-1zM5 4h1v1h-1zM6 4h1v1h-1zM7 4h1v1h-1zM8 4h1v1h-1zM9 4h1v1h-1zM10 4h1v1h-1zM12 4h1v1h-1zM14 4h1v1h-1zM17 4h1v1h-1zM18 4h1v1h-1zM19 4h1v1h-1zM23 4h1v1h-1zM26 4h1v1h-1zM27 4h1v1h-1zM28 4h1v1h-1zM29 4h1v1h-1zM30 4h1v1h-1zM31 4h1v1h-1zM32 4h1v1h-1zM4 5h1v1h-1zM10 5h1v1h-1zM13 5h1v1h-1zM14 5h1v1h-1zM15 5h1v1h-1zM17 5h1v1h-1zM18 5h1v1h-1zM19 5h1v1h-1zM20 5h1v1h-1zM22 5h1v1h-1zM26 5h1v1h-1zM32 5h1v1h-1zM4 6h1v1h-1zM6 6h1v1h-1zM7 6h1v1h-1zM8 6h1v1h-1zM10 6h1v1h-1zM12 6h1v1h-1zM13 6h1v1h-1zM15 6h1v1h-1zM16 6h1v1h-1zM17 6h1v1h-1zM19 6h1v1h-1zM23 6h1v1h-1zM24 6h1v1h-1zM26 6h1v1h-1zM28 6h1v1h-1zM29 6h1v1h-1zM30 6h1v1h-1zM32 6h1v1h-1zM4 7h1v1h-1zM6 7h1v1h-1zM7 7h1v1h-1zM8 7h1v1h-1zM10 7h1v1h-1zM12 7h1v1h-1zM15 7h1v1h-1zM16 7h1v1h-1zM18 7h1v1h-1zM19 7h1v1h-1zM21 7h1v1h-1zM22 7h1v1h-1zM23 7h1v1h-1zM24 7h1v1h-1zM26 7h1v1h-1zM28 7h1v1h-1zM29 7h1v1h-1zM30 7h1v1h-1zM32 7h1v1h-1zM4 8h1v1h-1zM6 8h1v1h-1zM7 8h1v1h-1zM8 8h1v1h-1zM10 8h1v1h-1zM12 8h1v1h-1zM14 8h1v1h-1zM16 8h1v1h-1zM19 8h1v1h-1zM20 8h1v1h-1zM23 8h1v1h-1zM24 8h1v1h-1zM26 8h1v1h-1zM28 8h1v1h-1zM29 8h1v1h-1zM30 8h1v1h-1zM32 8h1v1h-1zM4 9h1v1h-1zM10 9h1v1h-1zM12 9h1v1h-1zM14 9h1v1h-1zM15 9h1v1h-1zM16 9h1v1h-1zM21 9h1v1h-1zM24 9h1v1h-1zM26 9h1v1h-1zM32 9h1v1h-1zM4 10h1v1h-1zM5 10h1v1h-1zM6 10h1v1h-1zM7 10h1v1h-1zM8 10h1v1h-1zM9 10h1v1h-1zM10 10h1v1h-1zM12 10h1v1h-1zM14 10h1v1h-1zM16 10h1v1h-1zM18 10h1v1h-1zM20 10h1v1h-1zM22 10h1v1h-1zM24 10h1v1h-1zM26 10h1v1h-1zM27 10h1v1h-1zM28 10h1v1h-1zM29 10h1v1h-1zM30 10h1v1h-1zM31 10h1v1h-1zM32 10h1v1h-1zM13 11h1v1h-1zM14 11h1v1h-1zM15 11h1v1h-1zM18 11h1v1h-1zM20 11h1v1h-1zM22 11h1v1h-1zM23 11h1v1h-1zM24 11h1v1h-1zM6 12h1v1h-1zM7 12h1v1h-1zM8 12h1v1h-1zM9 12h1v1h-1zM10 12h1v1h-1zM11 12h1v1h-1zM14 12h1v1h-1zM15 12h1v1h-1zM16 12h1v1h-1zM20 12h1v1h-1zM21 12h1v1h-1zM22 12h1v1h-1zM23 12h1v1h-1zM27 12h1v1h-1zM28 12h1v1h-1zM29 12h1v1h-1zM30 12h1v1h-1zM32 12h1v1h-1zM4 13h1v1h-1zM7 13h1v1h-1zM8 13h1v1h-1zM9 13h1v1h-1zM11 13h1v1h-1zM13 13h1v1h-1zM15 13h1v1h-1zM17 13h1v1h-1zM18 13h1v1h-1zM19 13h1v1h-1zM23 13h1v1h-1zM25 13h1v1h-1zM26 13h1v1h-1zM28 13h1v1h-1zM32 13h1v1h-1zM4 14h1v1h-1zM10 14h1v1h-1zM17 14h1v1h-1zM18 14h1v1h-1zM19 14h1v1h-1zM20 14h1v1h-1zM21 14h1v1h-1zM22 14h1v1h-1zM26 14h1v1h-1zM27 14h1v1h-1zM28 14h1v1h-1zM4 15h1v1h-1zM6 15h1v1h-1zM7 15h1v1h-1zM12 15h1v1h-1zM14 15h1v1h-1zM15 15h1v1h-1zM16 15h1v1h-1zM17 15h1v1h-1zM19 15h1v1h-1zM22 15h1v1h-1zM25 15h1v1h-1zM26 15h1v1h-1zM27 15h1v1h-1zM28 15h1v1h-1zM29 15h1v1h-1zM31 15h1v1h-1zM4 16h1v1h-1zM7 16h1v1h-1zM8 16h1v1h-1zM10 16h1v1h-1zM12 16h1v1h-1zM14 16h1v1h-1zM15 16h1v1h-1zM18 16h1v1h-1zM19 16h1v1h-1zM21 16h1v1h-1zM22 16h1v1h-1zM24 16h1v1h-1zM29 16h1v1h-1zM30 16h1v1h-1zM4 17h1v1h-1zM5 17h1v1h-1zM8 17h1v1h-1zM13 17h1v1h-1zM14 17h1v1h-1zM15 17h1v1h-1zM16 17h1v1h-1zM19 17h1v1h-1zM20 17h1v1h-1zM23 17h1v1h-1zM24 17h1v1h-1zM25 17h1v1h-1zM26 17h1v1h-1zM27 17h1v1h-1zM28 17h1v1h-1zM32 17h1v1h-1zM4 18h1v1h-1zM5 18h1v1h-1zM7 18h1v1h-1zM8 18h1v1h-1zM10 18h1v1h-1zM12 18h1v1h-1zM16 18h1v1h-1zM21 18h1v1h-1zM22 18h1v1h-1zM24 18h1v1h-1zM26 18h1v1h-1zM29 18h1v1h-1zM30 18h1v1h-1zM5 19h1v1h-1zM6 19h1v1h-1zM7 19h1v1h-1zM8 19h1v1h-1zM9 19h1v1h-1zM13 19h1v1h-1zM14 19h1v1h-1zM16 19h1v1h-1zM18 19h1v1h-1zM20 19h1v1h-1zM22 19h1v1h-1zM23 19h1v1h-1zM24 19h1v1h-1zM27 19h1v1h-1zM31 19h1v1h-1zM4 20h1v1h-1zM6 20h1v1h-1zM8 20h1v1h-1zM10 20h1v1h-1zM12 20h1v1h-1zM15 20h1v1h-1zM16 20h1v1h-1zM20 20h1v1h-1zM21 20h1v1h-1zM22 20h1v1h-1zM23 20h1v1h-1zM29 20h1v1h-1zM30 20h1v1h-1zM4 21h1v1h-1zM5 21h1v1h-1zM6 21h1v1h-1zM9 21h1v1h-1zM11 21h1v1h-1zM12 21h1v1h-1zM14 21h1v1h-1zM15 21h1v1h-1zM17 21h1v1h-1zM18 21h1v1h-1zM19 21h1v1h-1zM23 21h1v1h-1zM25 21h1v1h-1zM26 21h1v1h-1zM27 21h1v1h-1zM28 21h1v1h-1zM30 21h1v1h-1zM32 21h1v1h-1zM4 22h1v1h-1zM6 22h1v1h-1zM7 22h1v1h-1zM10 22h1v1h-1zM12 22h1v1h-1zM13 22h1v1h-1zM14 22h1v1h-1zM17 22h1v1h-1zM18 22h1v1h-1zM19 22h1v1h-1zM20 22h1v1h-1zM24 22h1v1h-1zM27 22h1v1h-1zM28 22h1v1h-1zM30 22h1v1h-1zM4 23h1v1h-1zM6 23h1v1h-1zM8 23h1v1h-1zM11 23h1v1h-1zM15 23h1v1h-1zM17 23h1v1h-1zM19 23h1v1h-1zM31 23h1v1h-1zM4 24h1v1h-1zM6 24h1v1h-1zM9 24h1v1h-1zM10 24h1v1h-1zM11 24h1v1h-1zM12 24h1v1h-1zM13 24h1v1h-1zM14 24h1v1h-1zM16 24h1v1h-1zM18 24h1v1h-1zM19 24h1v1h-1zM21 24h1v1h-1zM22 24h1v1h-1zM23 24h1v1h-1zM24 24h1v1h-1zM25 24h1v1h-1zM26 24h1v1h-1zM27 24h1v1h-1zM28 24h1v1h-1zM30 24h1v1h-1zM31 24h1v1h-1zM32 24h1v1h-1zM12 25h1v1h-1zM13 25h1v1h-1zM19 25h1v1h-1zM20 25h1v1h-1zM24 25h1v1h-1zM28 25h1v1h-1zM29 25h1v1h-1zM30 25h1v1h-1zM31 25h1v1h-1zM32 25h1v1h-1zM4 26h1v1h-1zM5 26h1v1h-1zM6 26h1v1h-1zM7 26h1v1h-1zM8 26h1v1h-1zM9 26h1v1h-1zM10 26h1v1h-1zM12 26h1v1h-1zM13 26h1v1h-1zM15 26h1v1h-1zM16 26h1v1h-1zM22 26h1v1h-1zM23 26h1v1h-1zM24 26h1v1h-1zM26 26h1v1h-1zM28 26h1v1h-1zM29 26h1v1h-1zM30 26h1v1h-1zM4 27h1v1h-1zM10 27h1v1h-1zM12 27h1v1h-1zM13 27h1v1h-1zM14 27h1v1h-1zM16 27h1v1h-1zM18 27h1v1h-1zM20 27h1v1h-1zM23 27h1v1h-1zM24 27h1v1h-1zM28 27h1v1h-1zM31 27h1v1h-1zM32 27h1v1h-1zM4 28h1v1h-1zM6 28h1v1h-1zM7 28h1v1h-1zM8 28h1v1h-1zM10 28h1v1h-1zM12 28h1v1h-1zM13 28h1v1h-1zM15 28h1v1h-1zM21 28h1v1h-1zM22 28h1v1h-1zM24 28h1v1h-1zM25 28h1v1h-1zM26 28h1v1h-1zM27 28h1v1h-1zM28 28h1v1h-1zM30 28h1v1h-1zM32 28h1v1h-1zM4 29h1v1h-1zM6 29h1v1h-1zM7 29h1v1h-1zM8 29h1v1h-1zM10 29h1v1h-1zM12 29h1v1h-1zM18 29h1v1h-1zM19 29h1v1h-1zM25 29h1v1h-1zM29 29h1v1h-1zM30 29h1v1h-1zM4 30h1v1h-1zM6 30h1v1h-1zM7 30h1v1h-1zM8 30h1v1h-1zM10 30h1v1h-1zM12 30h1v1h-1zM13 30h1v1h-1zM14 30h1v1h-1zM15 30h1v1h-1zM16 30h1v1h-1zM17 30h1v1h-1zM19 30h1v1h-1zM20 30h1v1h-1zM22 30h1v1h-1zM23 30h1v1h-1zM25 30h1v1h-1zM26 30h1v1h-1zM27 30h1v1h-1zM28 30h1v1h-1zM29 30h1v1h-1zM30 30h1v1h-1zM31 30h1v1h-1zM4 31h1v1h-1zM10 31h1v1h-1zM16 31h1v1h-1zM17 31h1v1h-1zM23 31h1v1h-1zM24 31h1v1h-1zM26 31h1v1h-1zM28 31h1v1h-1zM29 31h1v1h-1zM31 31h1v1h-1zM4 32h1v1h-1zM5 32h1v1h-1zM6 32h1v1h-1zM7 32h1v1h-1zM8 32h1v1h-1zM9 32h1v1h-1zM10 32h1v1h-1zM15 32h1v1h-1zM16 32h1v1h-1zM17 32h1v1h-1zM18 32h1v1h-1zM19 32h1v1h-1zM20 32h1v1h-1zM21 32h1v1h-1zM22 32h1v1h-1zM23 32h1v1h-1zM26 32h1v1h-1zM27 32h1v1h-1zM30 32h1v1h-1z"/></svg><span>手機掃這裡，直接加 LINE。</span></div>
+  <ul class="openers" data-dim=".05">
+    <li>不知道第一句說什麼，可以直接講：</li>
+    <li>我想要一個記帳 App</li>
+    <li>幫我把 Excel 變成系統</li>
+    <li>我要一個品牌形象網站</li>
+  </ul>
+</section>
+
+<span class="alias" id="capabilities"></span>
+<section class="all" id="all">
+  <details data-dim=".06">
+    <summary><span class="d" role="heading" aria-level="2">全部服務</span><span id="capsN"></span></summary>
+    <input id="capsQ" type="search" placeholder="搜尋，例如：LINE、Excel、上架、爬蟲" aria-label="搜尋服務">
+    <p id="capsR" role="status"></p>
+    <div class="caps"><details class="cap"><summary>網站與網頁</summary><p class="bl">從一頁式形象網站，到有會員、有後台的網頁系統。手機電腦都能看。</p><ul><li data-syn="官網 官方網站 公司網站 形象網站"><b>品牌形象網站</b>公司、店家、個人品牌的門面，手機打開一樣專業。</li><li><b>活動頁 / 銷售頁</b>一頁講清楚賣什麼，按鈕直接導到購買或 LINE。</li><li><b>作品集網站</b>像這個網站：動畫、互動、分享到社群有預覽圖。</li><li><b>網頁應用（React / Next.js / Vue）</b>有表單、有登入、會算東西的「會動的網站」。</li><li><b>後台管理介面</b>給內部人員管訂單、商品、會員、內容。</li><li><b>預約 / 報名系統</b>選時段、填資料、自動寄確認信。</li><li><b>多語系網站</b>中文、英文、日文一鍵切換。</li><li><b>SEO 基礎優化</b>標題、描述、網站地圖、結構化資料，讓 Google 讀得懂你。</li><li><b>網站速度優化</b>圖片壓縮、延遲載入，可附優化前後的量測分數。</li><li><b>無障礙調整</b>鍵盤可操作、螢幕報讀軟體讀得出來、顏色對比足夠。</li><li><b>舊網站翻新</b>內容保留，換成現代、手機友善的版面。</li><li><b>WordPress 客製與修復</b>外掛衝突、版面跑掉、網站被植入惡意程式後的清理。</li></ul></details><details class="cap"><summary>後端・資料庫・金流</summary><p class="bl">看不到但最重要的部分：資料存哪、誰能看、錢怎麼收。</p><ul><li><b>API 開發</b>讓網站、App、別的系統互相拿資料。</li><li><b>會員登入與權限</b>Email、Google、LINE 登入；誰能看什麼、改什麼。</li><li><b>資料庫設計</b>PostgreSQL、MySQL、SQLite、Firebase、Supabase，依規模挑。</li><li><b>金流串接</b>綠界、藍新、Stripe，付款成功自動開單、寄通知。</li><li><b>第三方服務串接</b>電子發票、物流、地圖、簡訊，依對方提供的 API 接上。</li><li><b>Webhook 系統串接</b>A 系統發生事情，B 系統自動跟著動。</li><li><b>檔案上傳與圖片處理</b>自動縮圖、加浮水印、存到雲端。</li><li><b>即時功能</b>聊天室、即時通知、線上人數，不用重新整理。</li><li><b>排程任務</b>每天幾點自動結帳、寄報表、清理舊資料。</li><li><b>資料搬家</b>舊系統資料轉進新資料庫，匯入後核對筆數。</li></ul></details><details class="cap"><summary>手機 App</summary><p class="bl">新開發、修 bug、送審上架。沒有 Mac 也能用雲端編譯 iOS。</p><ul><li><b>iOS App 開發</b>Swift / SwiftUI 原生開發。</li><li><b>Android App 開發</b>Kotlin 原生開發。</li><li><b>跨平台 App</b>Flutter / React Native，一份程式同時出 iOS 和 Android。</li><li data-syn="修bug 除錯"><b>App 當機與 bug 修復</b>看錯誤紀錄找根因，不是只把錯誤藏起來。</li><li><b>手機硬體功能</b>相機、定位、藍牙、推播通知、掃描條碼。</li><li><b>訂閱與內購</b>Apple StoreKit、Google Play 帳單，方案與價格對齊後台。</li><li><b>上架設定與送審</b>權限說明、隱私標籤、被退件的原因處理。</li><li><b>雲端編譯與自動打包</b>用 GitHub Actions 在雲端 Mac 編譯，每次改完自動檢查。</li><li><b>網站變 App（PWA）</b>可以加到手機主畫面、離線也能開。</li></ul></details><details class="cap"><summary>AI 應用與機器人</summary><p class="bl">把 AI 放進你的工作流程：自動回客人、讀文件、查資料、做研究。</p><ul><li data-syn="聊天機器人 chatbot"><b>AI 客服機器人</b>讀你的常見問題<wbr>和產品資料<wbr>來回答客人，答不出來轉真人。</li><li><b>企業知識庫問答（RAG）</b>手冊、規章、合約丟進去，用問的就找到答案。RAG＝先找資料再回答，比較不會亂講。</li><li><b>Discord 機器人</b>斜線指令、按鈕面板、身分組、排程公告、抽獎。</li><li data-syn="LINE機器人 聊天機器人 linebot"><b>LINE 官方帳號機器人</b>自動回覆、預約、查詢訂單、分眾推播。</li><li><b>Telegram / Slack 機器人</b>團隊通知、指令查詢、流程審核。</li><li><b>文件自動摘要與分類</b>大量 PDF、Email、表單，自動整理成重點。</li><li><b>AI 欄位擷取</b>從發票、名片、報價單照片抓出需要的欄位，轉成表格。</li><li><b>多 AI 協作流程</b>一個負責研究、一個負責查核，像作品裡的台股禿鷹。</li><li><b>串接 Claude / OpenAI API</b>把 AI 功能加進你現有的網站或系統。</li><li><b>MCP 工具開發</b>讓 AI 助手能直接查你的資料、操作你的系統。MCP＝讓 AI 呼叫外部工具的標準。</li><li><b>提示詞與 AI 流程優化</b>回答更穩定、格式固定、API 費用更低。</li></ul></details><details class="cap"><summary>自動化與資料擷取</summary><p class="bl">每天重複在做的事，寫成程式讓它自己跑。</p><ul><li><b>Excel / Google 試算表自動化</b>複雜公式、巨集、Apps Script，按一下就整理好。</li><li data-syn="爬蟲"><b>公開資料定時擷取</b>政府開放資料、公開網頁資訊定時抓取，遵守網站規範。</li><li><b>瀏覽器自動化</b>重複點網頁、填表、下載報表，交給程式做。</li><li><b>定時通知</b>價格變動、庫存不足、新訂單，自動發 LINE / Discord / Email。</li><li><b>檔案批次處理</b>上千個檔案一次改名、轉檔、壓縮、分資料夾。</li><li><b>Email 自動化</b>自動分類信件、依內容產生回覆草稿、定時寄報表。</li><li><b>表單串接</b>Google 表單送出後，自動建檔、通知、開單。</li><li><b>工作流程平台</b>n8n、Zapier、Make，把各種服務串在一起。</li><li><b>電腦重複工作腳本</b>Windows / Mac 上一鍵完成的小腳本。</li></ul></details><details class="cap"><summary>資料・報表・文件檔</summary><p class="bl">資料亂、報表手做、單據手打？整理成一鍵產出。</p><ul><li data-syn="記帳 進銷存"><b>Excel 變系統</b>欄位跟原本一樣，但自動加總、自動防錯。</li><li><b>資料清理</b>重複資料、格式不一、欄位錯位，一次整理乾淨。</li><li><b>儀表板</b>營收、庫存、流量，一頁看完。</li><li><b>圖表與資料視覺化</b>把數字變成一眼看懂的圖。</li><li><b>自動產生 PDF 單據</b>報價單、出貨單、對帳單，資料填好直接印。</li><li><b>Word / Excel / PPT 自動產生</b>固定格式的文件，由程式批次產出。</li><li><b>統計分析報告</b>附圖表和白話結論，不是只丟一堆數字。</li><li><b>PDF 處理</b>合併、拆頁、抽表格、掃描檔轉文字（OCR）。</li><li><b>財經與股市資料整理</b>只做資料蒐集與分析工具，不提供投資建議。</li></ul></details><details class="cap"><summary>接手舊專案與修復</summary><p class="bl">前一個工程師不見了、程式沒人看得懂、一改就壞？從這裡接。</p><ul><li><b>讀懂沒文件的程式</b>整理成架構圖和說明，讓你知道手上有什麼。</li><li data-syn="修bug 除錯"><b>找 bug 根因</b>不只止血，說清楚為什麼壞、怎麼避免再壞。</li><li><b>爛尾專案接手</b>先健檢，評估修還是重寫比較划算。</li><li><b>套件與框架升級</b>版本太舊不支援、有已知漏洞，安全地升上去。</li><li><b>重構</b>功能不變，程式變得好改、好維護。</li><li><b>改寫到新技術</b>例如 jQuery 換 React、PHP 換 Node。</li><li><b>效能問題</b>頁面慢、資料庫查詢慢、記憶體爆掉。</li><li><b>編譯不過 / 跑不起來</b>環境設定、相依套件衝突、建置錯誤。</li></ul></details><details class="cap"><summary>測試・資安・程式品質</summary><p class="bl">外包交回來的東西能不能信？上線前先檢查。</p><ul><li><b>程式碼審查</b>幫你看別人寫的程式：品質、隱憂、該先修什麼。</li><li><b>安全檢查</b>後門、可疑對外連線、明文密碼、藏在建置流程裡的腳本。</li><li><b>套件漏洞檢查</b>用到的第三方套件有沒有已知漏洞。</li><li><b>自動化測試</b>單元測試、端對端測試，改東西不怕改壞別的。</li><li><b>自動檢查流程（CI）</b>每次改程式自動跑測試、檢查格式。</li><li><b>常見網站漏洞修補</b>SQL 注入、XSS、權限漏洞這類 OWASP 常見問題。</li><li><b>尾款前加密試用</b>系統加密放上網，拿金鑰才能試用，可隨時停權。</li><li><b>版本控制整理</b>Git 分支、紀錄、還原點，出事能退回上一版。</li></ul></details><details class="cap"><summary>部署・雲端・維運</summary><p class="bl">做好之後要放上網、要一直開著、壞了要知道。</p><ul><li><b>網站上線</b>GitHub Pages、Vercel、Netlify、Cloudflare Pages。</li><li><b>雲端主機部署</b>VPS、AWS、GCP，依預算挑。</li><li><b>Docker 容器化</b>換一台機器也能一鍵跑起來。</li><li><b>自動部署</b>程式推上去就自動上線，不用手動搬檔案。</li><li><b>網域與 HTTPS</b>買網域、設定 DNS、掛上安全憑證。</li><li><b>機器人 24 小時運行</b>部署到雲端，不用開著自己的電腦。</li><li><b>備份與監控</b>服務掛掉會通知，資料定期自動備份。</li><li><b>雲端費用檢查</b>看帳單找浪費，同樣效果每月少花一點。</li></ul></details><details class="cap"><summary>設計・原型・簡報</summary><p class="bl">還說不清楚要什麼的時候，先畫出來。</p><ul><li><b>概念圖與線稿</b>聊完後先看到畫面長怎樣。</li><li><b>可點擊原型</b>不用寫完整程式，就能實際點點看流程。</li><li><b>UI 介面設計</b>顏色、字體、按鈕規範統一，之後擴充不會亂。</li><li><b>品牌視覺方向</b>Logo 方向、主色、字體搭配建議。</li><li><b>社群圖與 Banner</b>貼文圖、廣告圖、網站主視覺。</li><li><b>使用體驗健檢</b>看你的網站或 App 哪裡讓人卡住、流失。</li><li><b>簡報製作</b>提案、募資、產品介紹簡報。</li><li><b>圖示設計</b>一致風格的 SVG 圖示組。</li></ul></details><details class="cap"><summary>小工具與擴充功能</summary><p class="bl">不用做成大系統，一個剛好的小工具就解決。</p><ul><li><b>Chrome 擴充功能</b>在你常用的網頁上加按鈕、自動填資料、整理畫面。</li><li><b>命令列工具</b>給技術團隊用的指令工具。</li><li><b>VS Code 擴充功能</b>給工程師團隊的編輯器小幫手。</li><li><b>桌面小工具</b>Windows / Mac 上的小程式。</li><li><b>Google Apps Script 工具</b>Gmail、雲端硬碟、日曆之間的自動化。</li><li><b>內部小網頁工具</b>報價計算機、單位換算、查詢頁，開瀏覽器就能用。</li></ul></details><details class="cap"><summary>文件與技術顧問</summary><p class="bl">還沒要開發，但想先搞清楚方向、預算、別人報價合不合理。</p><ul><li><b>需求規格書</b>把聊天內容整理成可以報價、可以驗收的文件。</li><li><b>系統架構圖與流程圖</b>一張圖看懂系統怎麼串。</li><li><b>操作手冊</b>給不懂技術的同事看的圖文教學。</li><li><b>API 文件</b>給串接的工程師看的規格。</li><li><b>交接文件</b>換人維護時不用從頭摸索。</li><li><b>版本更新公告</b>把改了什麼寫成使用者看得懂的話。</li><li><b>技術選型建議</b>該用什麼技術、之後每月維運要花多少。</li><li><b>外包報價健檢</b>別人給的報價和範圍合不合理，幫你看一次。</li></ul></details></div>
+    <p class="tech"><b>常用技術</b> HTML / CSS、JavaScript、TypeScript、React、Next.js、Vue、Node.js、Python、Go、PHP、Swift、Kotlin、Flutter、PostgreSQL、MySQL、Firebase、Supabase、Docker、GitHub Actions、Cloudflare、Playwright、Claude / OpenAI API</p>
+  </details>
+</section>
 </main>
 
-<footer class="footer">
-  <span><span class="dot"></span>RAW AIR · 台北</span>
-  <span>© <b id="year">2026</b> · 把想法做成看得見的東西</span>
-  <a href="#top" data-magnetic>回到最上面 ↑</a>
+<footer>
+  <span>RAW AIR</span><span>把想法做成看得見的東西</span>
+  <a href="#all">全部服務</a>
+  <a href="#top">回到最上面</a>
 </footer>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script src="js/main.js"></script>
+<a class="bar" id="bar" data-line data-direct data-goatcounter-click="line-bar" href="https://line.me/ti/p/~16225113" target="_blank" rel="noopener">用 LINE 問我</a>
+<dialog id="linePanel" aria-label="用 LINE 問我">
+  <h2>用 LINE 問我</h2>
+  <svg viewBox="0 0 37 37" role="img" aria-label="LINE QR Code" shape-rendering="crispEdges"><path fill="#000" d="M4 4h1v1h-1zM5 4h1v1h-1zM6 4h1v1h-1zM7 4h1v1h-1zM8 4h1v1h-1zM9 4h1v1h-1zM10 4h1v1h-1zM12 4h1v1h-1zM14 4h1v1h-1zM17 4h1v1h-1zM18 4h1v1h-1zM19 4h1v1h-1zM23 4h1v1h-1zM26 4h1v1h-1zM27 4h1v1h-1zM28 4h1v1h-1zM29 4h1v1h-1zM30 4h1v1h-1zM31 4h1v1h-1zM32 4h1v1h-1zM4 5h1v1h-1zM10 5h1v1h-1zM13 5h1v1h-1zM14 5h1v1h-1zM15 5h1v1h-1zM17 5h1v1h-1zM18 5h1v1h-1zM19 5h1v1h-1zM20 5h1v1h-1zM22 5h1v1h-1zM26 5h1v1h-1zM32 5h1v1h-1zM4 6h1v1h-1zM6 6h1v1h-1zM7 6h1v1h-1zM8 6h1v1h-1zM10 6h1v1h-1zM12 6h1v1h-1zM13 6h1v1h-1zM15 6h1v1h-1zM16 6h1v1h-1zM17 6h1v1h-1zM19 6h1v1h-1zM23 6h1v1h-1zM24 6h1v1h-1zM26 6h1v1h-1zM28 6h1v1h-1zM29 6h1v1h-1zM30 6h1v1h-1zM32 6h1v1h-1zM4 7h1v1h-1zM6 7h1v1h-1zM7 7h1v1h-1zM8 7h1v1h-1zM10 7h1v1h-1zM12 7h1v1h-1zM15 7h1v1h-1zM16 7h1v1h-1zM18 7h1v1h-1zM19 7h1v1h-1zM21 7h1v1h-1zM22 7h1v1h-1zM23 7h1v1h-1zM24 7h1v1h-1zM26 7h1v1h-1zM28 7h1v1h-1zM29 7h1v1h-1zM30 7h1v1h-1zM32 7h1v1h-1zM4 8h1v1h-1zM6 8h1v1h-1zM7 8h1v1h-1zM8 8h1v1h-1zM10 8h1v1h-1zM12 8h1v1h-1zM14 8h1v1h-1zM16 8h1v1h-1zM19 8h1v1h-1zM20 8h1v1h-1zM23 8h1v1h-1zM24 8h1v1h-1zM26 8h1v1h-1zM28 8h1v1h-1zM29 8h1v1h-1zM30 8h1v1h-1zM32 8h1v1h-1zM4 9h1v1h-1zM10 9h1v1h-1zM12 9h1v1h-1zM14 9h1v1h-1zM15 9h1v1h-1zM16 9h1v1h-1zM21 9h1v1h-1zM24 9h1v1h-1zM26 9h1v1h-1zM32 9h1v1h-1zM4 10h1v1h-1zM5 10h1v1h-1zM6 10h1v1h-1zM7 10h1v1h-1zM8 10h1v1h-1zM9 10h1v1h-1zM10 10h1v1h-1zM12 10h1v1h-1zM14 10h1v1h-1zM16 10h1v1h-1zM18 10h1v1h-1zM20 10h1v1h-1zM22 10h1v1h-1zM24 10h1v1h-1zM26 10h1v1h-1zM27 10h1v1h-1zM28 10h1v1h-1zM29 10h1v1h-1zM30 10h1v1h-1zM31 10h1v1h-1zM32 10h1v1h-1zM13 11h1v1h-1zM14 11h1v1h-1zM15 11h1v1h-1zM18 11h1v1h-1zM20 11h1v1h-1zM22 11h1v1h-1zM23 11h1v1h-1zM24 11h1v1h-1zM6 12h1v1h-1zM7 12h1v1h-1zM8 12h1v1h-1zM9 12h1v1h-1zM10 12h1v1h-1zM11 12h1v1h-1zM14 12h1v1h-1zM15 12h1v1h-1zM16 12h1v1h-1zM20 12h1v1h-1zM21 12h1v1h-1zM22 12h1v1h-1zM23 12h1v1h-1zM27 12h1v1h-1zM28 12h1v1h-1zM29 12h1v1h-1zM30 12h1v1h-1zM32 12h1v1h-1zM4 13h1v1h-1zM7 13h1v1h-1zM8 13h1v1h-1zM9 13h1v1h-1zM11 13h1v1h-1zM13 13h1v1h-1zM15 13h1v1h-1zM17 13h1v1h-1zM18 13h1v1h-1zM19 13h1v1h-1zM23 13h1v1h-1zM25 13h1v1h-1zM26 13h1v1h-1zM28 13h1v1h-1zM32 13h1v1h-1zM4 14h1v1h-1zM10 14h1v1h-1zM17 14h1v1h-1zM18 14h1v1h-1zM19 14h1v1h-1zM20 14h1v1h-1zM21 14h1v1h-1zM22 14h1v1h-1zM26 14h1v1h-1zM27 14h1v1h-1zM28 14h1v1h-1zM4 15h1v1h-1zM6 15h1v1h-1zM7 15h1v1h-1zM12 15h1v1h-1zM14 15h1v1h-1zM15 15h1v1h-1zM16 15h1v1h-1zM17 15h1v1h-1zM19 15h1v1h-1zM22 15h1v1h-1zM25 15h1v1h-1zM26 15h1v1h-1zM27 15h1v1h-1zM28 15h1v1h-1zM29 15h1v1h-1zM31 15h1v1h-1zM4 16h1v1h-1zM7 16h1v1h-1zM8 16h1v1h-1zM10 16h1v1h-1zM12 16h1v1h-1zM14 16h1v1h-1zM15 16h1v1h-1zM18 16h1v1h-1zM19 16h1v1h-1zM21 16h1v1h-1zM22 16h1v1h-1zM24 16h1v1h-1zM29 16h1v1h-1zM30 16h1v1h-1zM4 17h1v1h-1zM5 17h1v1h-1zM8 17h1v1h-1zM13 17h1v1h-1zM14 17h1v1h-1zM15 17h1v1h-1zM16 17h1v1h-1zM19 17h1v1h-1zM20 17h1v1h-1zM23 17h1v1h-1zM24 17h1v1h-1zM25 17h1v1h-1zM26 17h1v1h-1zM27 17h1v1h-1zM28 17h1v1h-1zM32 17h1v1h-1zM4 18h1v1h-1zM5 18h1v1h-1zM7 18h1v1h-1zM8 18h1v1h-1zM10 18h1v1h-1zM12 18h1v1h-1zM16 18h1v1h-1zM21 18h1v1h-1zM22 18h1v1h-1zM24 18h1v1h-1zM26 18h1v1h-1zM29 18h1v1h-1zM30 18h1v1h-1zM5 19h1v1h-1zM6 19h1v1h-1zM7 19h1v1h-1zM8 19h1v1h-1zM9 19h1v1h-1zM13 19h1v1h-1zM14 19h1v1h-1zM16 19h1v1h-1zM18 19h1v1h-1zM20 19h1v1h-1zM22 19h1v1h-1zM23 19h1v1h-1zM24 19h1v1h-1zM27 19h1v1h-1zM31 19h1v1h-1zM4 20h1v1h-1zM6 20h1v1h-1zM8 20h1v1h-1zM10 20h1v1h-1zM12 20h1v1h-1zM15 20h1v1h-1zM16 20h1v1h-1zM20 20h1v1h-1zM21 20h1v1h-1zM22 20h1v1h-1zM23 20h1v1h-1zM29 20h1v1h-1zM30 20h1v1h-1zM4 21h1v1h-1zM5 21h1v1h-1zM6 21h1v1h-1zM9 21h1v1h-1zM11 21h1v1h-1zM12 21h1v1h-1zM14 21h1v1h-1zM15 21h1v1h-1zM17 21h1v1h-1zM18 21h1v1h-1zM19 21h1v1h-1zM23 21h1v1h-1zM25 21h1v1h-1zM26 21h1v1h-1zM27 21h1v1h-1zM28 21h1v1h-1zM30 21h1v1h-1zM32 21h1v1h-1zM4 22h1v1h-1zM6 22h1v1h-1zM7 22h1v1h-1zM10 22h1v1h-1zM12 22h1v1h-1zM13 22h1v1h-1zM14 22h1v1h-1zM17 22h1v1h-1zM18 22h1v1h-1zM19 22h1v1h-1zM20 22h1v1h-1zM24 22h1v1h-1zM27 22h1v1h-1zM28 22h1v1h-1zM30 22h1v1h-1zM4 23h1v1h-1zM6 23h1v1h-1zM8 23h1v1h-1zM11 23h1v1h-1zM15 23h1v1h-1zM17 23h1v1h-1zM19 23h1v1h-1zM31 23h1v1h-1zM4 24h1v1h-1zM6 24h1v1h-1zM9 24h1v1h-1zM10 24h1v1h-1zM11 24h1v1h-1zM12 24h1v1h-1zM13 24h1v1h-1zM14 24h1v1h-1zM16 24h1v1h-1zM18 24h1v1h-1zM19 24h1v1h-1zM21 24h1v1h-1zM22 24h1v1h-1zM23 24h1v1h-1zM24 24h1v1h-1zM25 24h1v1h-1zM26 24h1v1h-1zM27 24h1v1h-1zM28 24h1v1h-1zM30 24h1v1h-1zM31 24h1v1h-1zM32 24h1v1h-1zM12 25h1v1h-1zM13 25h1v1h-1zM19 25h1v1h-1zM20 25h1v1h-1zM24 25h1v1h-1zM28 25h1v1h-1zM29 25h1v1h-1zM30 25h1v1h-1zM31 25h1v1h-1zM32 25h1v1h-1zM4 26h1v1h-1zM5 26h1v1h-1zM6 26h1v1h-1zM7 26h1v1h-1zM8 26h1v1h-1zM9 26h1v1h-1zM10 26h1v1h-1zM12 26h1v1h-1zM13 26h1v1h-1zM15 26h1v1h-1zM16 26h1v1h-1zM22 26h1v1h-1zM23 26h1v1h-1zM24 26h1v1h-1zM26 26h1v1h-1zM28 26h1v1h-1zM29 26h1v1h-1zM30 26h1v1h-1zM4 27h1v1h-1zM10 27h1v1h-1zM12 27h1v1h-1zM13 27h1v1h-1zM14 27h1v1h-1zM16 27h1v1h-1zM18 27h1v1h-1zM20 27h1v1h-1zM23 27h1v1h-1zM24 27h1v1h-1zM28 27h1v1h-1zM31 27h1v1h-1zM32 27h1v1h-1zM4 28h1v1h-1zM6 28h1v1h-1zM7 28h1v1h-1zM8 28h1v1h-1zM10 28h1v1h-1zM12 28h1v1h-1zM13 28h1v1h-1zM15 28h1v1h-1zM21 28h1v1h-1zM22 28h1v1h-1zM24 28h1v1h-1zM25 28h1v1h-1zM26 28h1v1h-1zM27 28h1v1h-1zM28 28h1v1h-1zM30 28h1v1h-1zM32 28h1v1h-1zM4 29h1v1h-1zM6 29h1v1h-1zM7 29h1v1h-1zM8 29h1v1h-1zM10 29h1v1h-1zM12 29h1v1h-1zM18 29h1v1h-1zM19 29h1v1h-1zM25 29h1v1h-1zM29 29h1v1h-1zM30 29h1v1h-1zM4 30h1v1h-1zM6 30h1v1h-1zM7 30h1v1h-1zM8 30h1v1h-1zM10 30h1v1h-1zM12 30h1v1h-1zM13 30h1v1h-1zM14 30h1v1h-1zM15 30h1v1h-1zM16 30h1v1h-1zM17 30h1v1h-1zM19 30h1v1h-1zM20 30h1v1h-1zM22 30h1v1h-1zM23 30h1v1h-1zM25 30h1v1h-1zM26 30h1v1h-1zM27 30h1v1h-1zM28 30h1v1h-1zM29 30h1v1h-1zM30 30h1v1h-1zM31 30h1v1h-1zM4 31h1v1h-1zM10 31h1v1h-1zM16 31h1v1h-1zM17 31h1v1h-1zM23 31h1v1h-1zM24 31h1v1h-1zM26 31h1v1h-1zM28 31h1v1h-1zM29 31h1v1h-1zM31 31h1v1h-1zM4 32h1v1h-1zM5 32h1v1h-1zM6 32h1v1h-1zM7 32h1v1h-1zM8 32h1v1h-1zM9 32h1v1h-1zM10 32h1v1h-1zM15 32h1v1h-1zM16 32h1v1h-1zM17 32h1v1h-1zM18 32h1v1h-1zM19 32h1v1h-1zM20 32h1v1h-1zM21 32h1v1h-1zM22 32h1v1h-1zM23 32h1v1h-1zM26 32h1v1h-1zM27 32h1v1h-1zM30 32h1v1h-1z"/></svg>
+  <p>手機掃這裡，直接加 LINE。</p>
+  <div class="lid"><span>LINE ID <span class="id">16225113</span></span><button class="copy" type="button" aria-live="polite" data-copy="16225113" data-goatcounter-click="copy-id">複製 ID</button></div>
+  <div class="row"><a class="btn" data-direct href="https://line.me/ti/p/~16225113" target="_blank" rel="noopener">開啟 LINE</a><button class="x" id="lineClose" type="button">關閉</button></div>
+</dialog>
+<script defer src="js/ui.js"></script>
+<script defer src="js/shapes.js"></script>
+<script defer src="js/choreography.js"></script>
+<script defer src="js/engine.js"></script>
 </body>
 </html>
