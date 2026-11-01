@@ -160,11 +160,31 @@ function setBg(A,B,t){var m=t*t*(3-2*t),a=A.bgc,b=B.bgc,s='rgb('+Math.round((a[0
   if(s!==lastBg){lastBg=s;root.style.backgroundColor=s}}
 
 /* ---------- 繪製 ---------- */
-var motion=RA.motion,yD=scrollY,sD=0,intro=(scrollY<40&&motion)?0:1,introDelay=.75,mx=0,my=0,tx=0,ty=0,time=0,last=0,running=false,count=N;
+var MORPH_S=1.2,motion=RA.motion,yD=scrollY,sD=0,intro=(scrollY<40&&motion)?0:1,introDelay=.75,mx=0,my=0,tx=0,ty=0,time=0,last=0,running=false,count=N;
 var quality={coc:1,amb:true};
 function poseU(uR,uO,st,shape,y,intr){var p=C.pose(st,shape,y,time,intr,mx,my);gl.uniformMatrix3fv(uR,false,p.r);gl.uniform4f(uO,p.x,p.y,0,p.s);return p.s}
+/* 需求標籤：黏在小球上，合成時一起飛向應用並淡出 */
+var needsSrc=document.getElementById('needsL'),needsEl=needsSrc&&needsSrc.cloneNode(true),needsLi=needsEl?[].slice.call(needsEl.children):[];
+if(needsEl){needsEl.id='needsFly';needsEl.setAttribute('aria-hidden','true');document.body.appendChild(needsEl)}
+function scr(p,x,y,z){var m=p.r,wx=(m[0]*x+m[3]*y+m[6]*z)*p.s+p.x,wy=(m[1]*x+m[4]*y+m[7]*z)*p.s+p.y,wz=(m[2]*x+m[5]*y+m[8]*z)*p.s,w=C.CAMZ-wz;
+  return[(wx*C.F/C.asp/w*.5+.5)*C.vw,(.5-wy*C.F/w*.5)*C.vh]}
+function placeNeeds(y,s){
+  if(!needsEl)return;
+  var k=-1,ST=C.ST,i;for(i=0;i<ST.length;i++)if(ST[i].id==='needs')k=i;
+  var ok=k>=0&&ST[k].shape==='needs'&&ready[SHAPE_IDX.needs];
+  document.documentElement.classList.toggle('needs-on',!!ok);
+  if(!ok)return;
+  var inP=Math.max(0,Math.min(1,(s-(k-1)-.55)/.45)),out=Math.max(0,Math.min(1,s-k));
+  if(!motion){inP=Math.abs(s-k)<.5?1:0;out=0}
+  var vis=inP>0&&out<1;needsEl.style.visibility=vis?'visible':'hidden';
+  if(!vis)return;
+  var p=C.pose(ST[k],'needs',y,time,false,mx,my),nx=ST[k+1],q=C.pose(nx,nx.shape,y,time,false,mx,my),e=out*out*(3-2*out),c=scr(q,0,0,0);
+  needsLi.forEach(function(li,j){var b=C.NEEDS[j],a=scr(p,b[0],b[1],0),hw=li.offsetWidth/2+6,o=Math.min(inP,1-Math.min(1,out*1.7)),sc=1-e*.45;
+    a[0]=Math.max(hw,Math.min(C.vw-hw,a[0]));li.style.opacity=o.toFixed(3);li.style.transform='translate3d('+(a[0]+(c[0]-a[0])*e).toFixed(1)+'px,'+(a[1]+(c[1]-a[1])*e).toFixed(1)+'px,0) translate(-50%,-50%) scale('+sc.toFixed(3)+')'});
+}
 function render(){
   if(dead||!randOK||!C.ST.length)return;
+  placeNeeds(yD,sD);
   var ST=C.ST,y=yD,s=sD,a=Math.min(ST.length-1,Math.floor(s)),T=s-a,b=Math.min(ST.length-1,a+1);
   if(!motion){T=T>=.5?1:0}
   var A=ST[a],B=T>0?ST[b]:ST[a],sa=A.shape,sb=B.shape,introOn=false,pick=C.pick;
@@ -283,14 +303,16 @@ function frame(now){
   var dt=last?now-last:16;last=now;var ds=Math.min(dt,100)/1000;
   time+=ds;if(time>600)time-=600;
   var y=scrollY;if(Math.abs(y-yD)>innerHeight*2.2)yD=y;else yD+=(y-yD)*(1-Math.exp(-ds*11));
-  var s=C.stageCoord(yD);if(Math.abs(s-sD)>1.2)sD=s;else sD+=(s-sD)*(1-Math.exp(-ds*7));if(Math.abs(s-sD)<.0015)sD=s;
+  var s=C.stageCoord(yD),sd=s-sD,sa=Math.abs(sd);
+  /* 捲再快，一次變形也至少走 MORPH_S 秒；一次跨很多段才加速帶過 */
+  if(sa>3)sD=s;else if(sa<.0015)sD=s;else sD+=Math.sign(sd)*Math.min(sa*(1-Math.exp(-ds*5)),ds*Math.max(1,sd*sd)/MORPH_S);
   mx+=(tx-mx)*(1-Math.exp(-ds*3.5));my+=(ty-my)*(1-Math.exp(-ds*3.5));
   if(glyphReady&&intro<1){if(introDelay>0)introDelay-=ds;else intro=Math.min(1,intro+ds/1.5)}
   var pick=C.pick;if(pick.t<1)pick.t=Math.min(1,pick.t+ds/.95);
   if(steps>=TOP&&idle>3000)setDPR(1);
   render();
   if(SLOW){var t0=performance.now();while(performance.now()-t0<SLOW){}}
-  if(DEBUG)dbg(now,dt);
+  if(DEBUG){window.__sD=sD;dbg(now,dt)}
   if(motion&&!half)adapt(dt);
   var busy=intro<1||pick.t<1||Math.abs(y-yD)>.5||Math.abs(s-sD)>.002;
   if(busy)lastInput=now;

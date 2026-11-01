@@ -4,10 +4,11 @@
 var RA=window.RA=window.RA||{};
 function $$(s){return [].slice.call(document.querySelectorAll(s))}
 function hex(h){return[parseInt(h.slice(1,3),16)/255,parseInt(h.slice(3,5),16)/255,parseInt(h.slice(5,7),16)/255]}
-var SHAPE_ORDER=['grid','glyph','crack','ledger','fixed','ticker','lock','bubble','app','window','loop','bulb'],SHAPE_IDX={};
+var SHAPE_ORDER=['grid','glyph','crack','ledger','fixed','ticker','lock','bubble','app','window','loop','bulb','needs'],SHAPE_IDX={};
 SHAPE_ORDER.forEach(function(s,i){SHAPE_IDX[s]=i});
 /* 半寬半高：用來把形狀塞進插槽 */
-var EXT={grid:[3.4,2.2],glyph:[1,1],crack:[.56,1.08],fixed:[.56,1.08],app:[.56,1.08],ledger:[1.15,.87],ticker:[1.5,1.05],lock:[1.72,1.12],bubble:[1.14,1.05],window:[1.22,.82],loop:[1.1,1.1],bulb:[.74,1.08]};
+var EXT={grid:[3.4,2.2],glyph:[1,1],crack:[.56,1.08],fixed:[.56,1.08],app:[.56,1.08],ledger:[1.15,.87],ticker:[1.5,1.05],lock:[1.72,1.12],bubble:[1.14,1.05],window:[1.22,.82],loop:[1.1,1.1],bulb:[.74,1.08],needs:[1.56,1.14]};
+var NEEDS=[[-1.02,.72,.34],[.5,.86,.27],[1.16,.12,.36],[-.3,.02,.44],[-1.2,-.56,.28],[.52,-.74,.34]];
 var WORLD={
  hero:{bg:'#08181B',far:'#1B8F98',lit:'#FFF6E2',acc:'#FF6A48',amb:'#3E9AA3',dot:'#FF5A3C',g:2},
  stuck:{bg:'#0A1C22',far:'#238E96',lit:'#E8F8F4',acc:'#FF5A3C',amb:'#3E9AA3',dot:'#FF5A3C',g:1.35},
@@ -20,7 +21,7 @@ var WORLD={
  close:{bg:'#14100E',far:'#8A6A34',lit:'#F3D79A',acc:'#06C755',amb:'#8C7A44',dot:'#06C755',g:1.5}};
 Object.keys(WORLD).forEach(function(k){var w=WORLD[k];w.bgc=hex(w.bg);w.farc=hex(w.far);w.litc=hex(w.lit);w.accc=hex(w.acc);w.ambc=hex(w.amb);w.dotc=hex(w.dot)});
 
-var C=RA.C={SHAPE_ORDER:SHAPE_ORDER,SHAPE_IDX:SHAPE_IDX,EXT:EXT,WORLD:WORLD,INK:hex('#1C2733'),STAMP:hex('#B5332A'),
+var C=RA.C={NEEDS:NEEDS,SHAPE_ORDER:SHAPE_ORDER,SHAPE_IDX:SHAPE_IDX,EXT:EXT,WORLD:WORLD,INK:hex('#1C2733'),STAMP:hex('#B5332A'),
   ST:[],rects:[],vw:0,vh:0,asp:1,SPLIT:'(min-width:960px),(min-width:768px) and (max-height:560px)',MOBILE:true,MW:200,F:1/Math.tan(21*Math.PI/180),CAMZ:6.2,
   rectArr:new Float32Array(24),rectDim:new Float32Array(6),
   pick:{stage:-1,from:0,to:0,t:1},onPick:function(){}};
@@ -31,11 +32,11 @@ function nums(s){return (s||'').split(',').map(Number)}
 function side(s){return s.cfg[0]<0?-1:1}
 C.measure=function(){
   var vh=C.vh,mob=C.MOBILE=!matchMedia(C.SPLIT).matches,sy=scrollY,old=C.ST,prev=null;
-  C.asp=C.vw/vh;C.MW=mob?150:200;
+  C.asp=C.vw/vh;C.MW=mob?320:440;
   C.ST=$$('[data-stage]').map(function(e,i){
     var r=e.getBoundingClientRect(),sl=e.querySelector('.slot'),sr=sl?sl.getBoundingClientRect():null;
     var st={el:e,id:e.id,top:r.top+sy,bottom:r.bottom+sy,shape:(old[i]&&old[i].id===e.id&&old[i].shape)||RA.picked[e.id]||e.getAttribute('data-shape'),world:WORLD[e.getAttribute('data-world')],cfg:nums(e.getAttribute(mob?'data-m':'data-d')),
-      wave:parseFloat(e.getAttribute('data-wave')||0),dim:parseFloat(e.getAttribute('data-dimp')||1),fix:e.hasAttribute('data-fix')};
+      wave:parseFloat(e.getAttribute('data-wave')||0),dim:parseFloat(e.getAttribute('data-dimp')||1),fix:e.hasAttribute('data-fix'),mw:e.hasAttribute('data-merge')?C.MW*1.8:C.MW};
     if(sr&&sr.height>0){st.st=sr.top+sy;st.sh=sr.height;st.sw=sr.width;st.sx=sr.left+sr.width/2}
     var anchor=(mob&&sr&&sr.height>0)?st.st:st.top;
     st.start=i===0?-1e9:anchor-vh*(mob?.74:.6);
@@ -50,6 +51,8 @@ C.measure=function(){
         if(h2)st.start=Math.min(st.start,h2.getBoundingClientRect().top+sy-vh-C.MW-8);
       }
     }
+    /* 合成要被看見：從上一個插槽還在畫面中段就開始，不躲到屏外 */
+    if(mob&&e.hasAttribute('data-merge')&&prev.st!==undefined)st.start=prev.st-vh*.3;
     if(prev&&i>1)st.start=Math.max(st.start,prev.start+C.MW+1);
     prev=st;
     return st;
@@ -66,7 +69,7 @@ C.fillRects=function(y){
   for(;k<6;k++){a[k*4]=-9999;a[k*4+1]=-9999;a[k*4+2]=0;a[k*4+3]=0;d[k]=1}
 };
 /* 捲動位置換成「第幾段＋過場進度」：無狀態，倒捲對稱 */
-C.stageCoord=function(y){var ST=C.ST,i;for(i=ST.length-1;i>=1;i--){if(y>=ST[i].start+C.MW)return i;if(y>=ST[i].start)return i-1+(y-ST[i].start)/C.MW}return 0};
+C.stageCoord=function(y){var ST=C.ST,i;for(i=ST.length-1;i>=1;i--){if(y>=ST[i].start+ST[i].mw)return i;if(y>=ST[i].start)return i-1+(y-ST[i].start)/ST[i].mw}return 0};
 function rot(yaw,pit,rol){var cy=Math.cos(yaw),sy=Math.sin(yaw),cp=Math.cos(pit),sp=Math.sin(pit),cr=Math.cos(rol),sr=Math.sin(rol);
   return new Float32Array([cr*cy,sr*cy,-sy,cr*sy*sp-sr*cp,sr*sy*sp+cr*cp,cy*sp,cr*sy*cp+sr*sp,sr*sy*cp-cr*sp,cy*cp])}
 /* 投影包圍盒八角，回傳要縮多少才不超出左右邊界（以形狀中心為基準） */

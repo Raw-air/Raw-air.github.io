@@ -1,6 +1,7 @@
 /* 形狀生成：可在 worker 或主執行緒跑。每個形狀回傳同點數、同排序規則的緊湊 buffer。 */
 function shapesLib(){
 'use strict';
+var NEEDS=[[-1.02,.72,.34],[.5,.86,.27],[1.16,.12,.36],[-.3,.02,.44],[-1.2,-.56,.28],[.52,-.74,.34]];
 var R;
 function rng(a){return function(){a|=0;a=a+0x6D2B79F5|0;var t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
 function gauss(){return (R()+R()+R()-1.5)/1.5}
@@ -197,6 +198,15 @@ function makeApp(n){
   s.add(8,disc(.3,-.76,.11,th+.016,1,1));
   return{d:s.bake(n),dot:[.3,-.76,th+.04,.06]};
 }
+/* 需求小球：每顆是客人講的一件事；位置與 RA.C.NEEDS 共用 */
+function makeNeeds(n){
+  var s=new Shape(),B=NEEDS;
+  B.forEach(function(b,i){var cx=b[0],cy=b[1],r=b[2],t=i%2?1:0;
+    s.add(r*r*100,function(o){var z=R(),a=R()*6.2832,q=Math.sqrt(1-z*z),nx=Math.cos(a)*q,ny=Math.sin(a)*q,lit=-.5*nx+.62*ny+.6*z;
+      set(o,cx+nx*r,cy+ny*r,z*r,nx,ny,z,t,Math.max(-1,Math.min(1,lit*1.5-.45)))});
+  });
+  return{d:s.bake(n),dot:[B[3][0],B[3][1],B[3][2]+.02,.07]};
+}
 /* 瀏覽器視窗 */
 function makeWindow(n){
   var hw=1.22,hh=.82,r=.07,D=.06,s=new Shape();
@@ -239,7 +249,7 @@ function makeBulb(n){
   return{d:s.bake(n),dot:[0,.2,.08,.06]};
 }
 
-var GENS={grid:makeGrid,glyph:makeGlyph,crack:makePhone,fixed:makeFixed,ledger:makeLedger,ticker:makeTicker,lock:makeLock,bubble:makeBubble,app:makeApp,window:makeWindow,loop:makeLoop,bulb:makeBulb};
+var GENS={grid:makeGrid,glyph:makeGlyph,crack:makePhone,fixed:makeFixed,ledger:makeLedger,ticker:makeTicker,lock:makeLock,bubble:makeBubble,app:makeApp,window:makeWindow,loop:makeLoop,bulb:makeBulb,needs:makeNeeds};
 
 /* 配對：所有形狀同一 Morton 規則＋同一打亂表；前 Na 顆保留給那顆紅點 */
 function part(v){v=Math.min(1023,Math.max(0,v*1023|0));v=(v|v<<16)&0x30000FF;v=(v|v<<8)&0x300F00F;v=(v|v<<4)&0x30C30C3;v=(v|v<<2)&0x9249249;return v}

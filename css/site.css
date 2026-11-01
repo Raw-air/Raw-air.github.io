@@ -291,3 +291,15 @@ html:not(.js) .mock+.mock{margin-top:10px}
 @media (min-width:768px){.mock{font-size:16px}}
 .tech{margin:14px 0 8px;font-size:15px;color:var(--soft)}
 .tech b{color:var(--ink);font-weight:600;margin-right:.5em}
+
+/* 需求小球的標籤：看不到粒子時是一般列表，粒子就緒後黏在小球上 */
+.needs-l{list-style:none;margin:16px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:8px}
+.needs-l li{padding:8px 12px;border-radius:999px;background:#14100EE6;border:1px solid #FFE7B855;color:#FFF3DC;font-size:15px;line-height:1.3;white-space:nowrap}
+#needsFly{display:none}
+html.needs-on #needsL{visibility:hidden}
+html.needs-on #needsFly{display:block;position:fixed;inset:0;margin:0;pointer-events:none;z-index:3;visibility:hidden;overflow:hidden;contain:strict}
+#needsFly li{position:absolute;left:0;top:0;will-change:transform,opacity;opacity:0}
+#needs{padding-bottom:40px}
+#needs .slot{height:min(50svh,100vw)}
+@media (max-width:420px){.needs-l li{font-size:14px;padding:6px 10px}}
+@media (min-width:960px){#needs{min-height:170vh}#needs .slot{height:72vh;top:14vh}}
