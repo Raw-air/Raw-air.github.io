@@ -23,11 +23,18 @@ var SHAPE_ORDER=C.SHAPE_ORDER,SHAPE_IDX=C.SHAPE_IDX;
 /* ---------- 著色器 ---------- */
 var MASK='uniform vec4 uR[6];uniform float uRD[6];uniform vec2 uRes;uniform vec2 uSeam;'+
 'float maskAt(vec2 p){float m=1.;for(int i=0;i<6;i++){vec2 d=abs(p-uR[i].xy)-uR[i].zw;float e=length(max(d,0.));float f=smoothstep(0.,56.,e);m=min(m,mix(uRD[i],1.,f));}return m;}'+
-'float paperAt(float y,float r){float j=(r-.5)*150.;return step(uSeam.x+j,y)*(1.-step(uSeam.y+j,y));}';
+'float paperAt(float y,float r){float j=(r-.5)*150.;return step(uSeam.x+j,y)*(1.-step(uSeam.y+j,y));}'+
+/* 指標排斥與漣漪：只在螢幕空間動點的位置，xy 是位移，z 是受力大小（給點徑與亮度）。
+   排斥在中心是零、往外才推，粒子被擠開而不是挖洞；半徑與力道每顆不同，邊緣不會是一個正圓 */
+'uniform vec4 uPtr;uniform vec4 uRip;float gRip=0.;'+
+'vec3 pushAt(vec2 s,float k){vec3 o=vec3(0.);'+
+'if(uPtr.w!=0.){vec2 d=s-uPtr.xy;float l=length(d)+.001;float g=l/(uPtr.z*.55*(.72+.56*k));float f=g*exp(.5-.5*g*g);vec2 h=d/l;o.xy+=(h+vec2(-h.y,h.x)*(k-.5)*.4)*f*uPtr.w*(.75+.5*fract(k*7.3));o.z=f*min(1.,abs(uPtr.w)/40.);}'+
+'if(uRip.w>0.){vec2 d=s-uRip.xy;float l=length(d)+.001;float t=(l-uRip.z)/(30.+uRip.z*.14);float f=exp(-t*t);o.xy+=d/l*f*uRip.w*(.6+.8*k);gRip=f*min(1.,uRip.w/30.);o.z=max(o.z,gRip);}'+
+'return o;}';
 var VS='#version 300 es\nprecision highp float;\n'+
 'layout(location=0)in vec4 aAp;layout(location=1)in vec4 aAn;layout(location=2)in vec4 aBp;layout(location=3)in vec4 aBn;layout(location=4)in vec4 aR;\n'+
 'uniform float uPX,uPass,uT,uTime,uBase,uF,uAsp,uCoc,uAmp,uCamZ,uNa,uCocMax,uPxMax,uWA,uWB,uDimA,uDimB,uDotA,uMess,uSolA,uSolB,uSolP,uSolF;uniform vec3 uDir,uCam,uLt,uDot,uInk,uStamp;uniform vec2 uG;\n'+
-'uniform mat3 uRA,uRB;uniform vec4 uOA,uOB;uniform vec3 uFA,uLA,uCA,uFB,uLB,uCB;\n'+MASK+
+'uniform mat3 uRA,uRB;uniform vec4 uOA,uOB;uniform vec3 uFA,uLA,uCA,uFB,uLB,uCB;uniform vec4 uNB[6];uniform float uNS,uRipC,uBul;\n'+MASK+
 'out vec4 vC;out vec2 vB;\n'+
 'vec3 cn(vec3 p,float t){return vec3(sin(p.y*1.3+p.z*.7+t)+sin(p.z*2.1+1.7),sin(p.z*1.1+p.x*.9+1.3+t)+sin(p.x*1.9+.4),sin(p.x*1.2+p.y*1.4+2.1-t)+sin(p.y*2.3+3.));}\n'+
 'float wv(vec3 a,float t){return (sin(a.x*1.5+t*.55)+.7*sin(a.y*2.2-t*.42+a.x*.8)+.35*sin(a.x*3.7+a.y*3.1+t*.3));}\n'+
@@ -40,42 +47,47 @@ var VS='#version 300 es\nprecision highp float;\n'+
 ' vec3 pa=uRA*A*uOA.w+uOA.xyz,pb=uRB*B*uOB.w+uOB.xyz;\n'+
 ' vec3 na=uRA*aAn.xyz,nb=uRB*aBn.xyz;vec3 nm=mix(na,nb,m);vec3 n=dot(nm,nm)<1e-4?vec3(0.,0.,1.):normalize(nm);\n'+
 ' vec3 p=mix(pa,pb,m);\n'+
+' float nh=0.;if(uNS>0.){vec3 q0=uNS<1.5?A:B;for(int i=0;i<6;i++){vec4 nb=uNB[i];if(nb.w>0.){vec2 dd=q0.xy-nb.xy;nh=max(nh,nb.w*step(dot(dd,dd),nb.z*nb.z*1.21));}}nh*=uNS<1.5?1.-m:m;p+=n*nh*.045;}\n'+
 ' if(isDot){p.z+=bell*1.1;p+=cn(p*.5,0.)*bell*.05;}else{\n'+
 '  p+=cn(p*1.05+aR.xyz*.25,uTime*.12)*(uAmp*bell*uMess)+cn(p*2.3,uTime*.25)*.0035;\n'+
 '  p.z+=bell*uMess*(aR.y-.42)*2.3;}\n'+
 ' vec3 v=p-uCam;v.z-=uCamZ;float w=-v.z;\n'+
+/* 小球上的指標：沿法線鼓起，不把粒子往外推，中央不會變成洞 */
+' float bl=0.;if(uBul>0.){vec2 s0=vec2(v.x*uF/uAsp/w*.5+.5,.5-v.y*uF/w*.5)*uRes;vec2 d0=(s0-uPtr.xy)/uPtr.z;bl=exp(-1.6*dot(d0,d0))*uBul;p+=n*bl*.085;v=p-uCam;v.z-=uCamZ;w=-v.z;}\n'+
 ' gl_Position=vec4(v.x*uF/uAsp,v.y*uF,0.,w);\n'+
 ' vec2 sp=vec2(v.x*uF/uAsp/w*.5+.5,.5-v.y*uF/w*.5)*uRes;\n'+
+' vec3 fx=pushAt(sp,aR.y);sp+=fx.xy;gl_Position.x+=fx.x/uRes.x*2.*w;gl_Position.y-=fx.y/uRes.y*2.*w;fx.z=max(fx.z,bl);\n'+
 ' float tag=mix(aAp.w,aBp.w,m);float e=mix(aAn.w,aBn.w,m);\n'+
 ' vec3 lp=mix(uOA.xyz,uOB.xyz,m)+uLt;float dl=length(p-lp);float pl=1./(1.+dl*dl*.3);\n'+
 ' vec3 c=mix(shade(n,aAp.w,aAn.w,pl,uFA,uLA,uCA),shade(n,aBp.w,aBn.w,pl,uFB,uLB,uCB),m);\n'+
 ' float facing=smoothstep(-.35,.2,n.z);\n'+
 ' float fog=clamp((w-uCamZ+.55)/1.9,0.,1.);c=mix(c,mix(uFA,uFB,m)*.5,fog*.72);\n'+
-' float P=paperAt(sp.y,isDot?.5:aR.x);\n'+
+' c=mix(c,mix(uLA,uLB,m),bl*.22);float P=paperAt(sp.y,isDot?.5:aR.x);\n'+
 ' float er=step(mix(aAp.w,aBp.w,m),-.01);float sol=mix(uSolA,uSolB,m)*step(.75,n.z)*(1.-er);\n'+
 ' float r=aR.z;float s=mix(.85+1.9*pow(r,8.),1.,sol);float spark=mix(mix(.82,2.4,pow(aR.x,14.)),1.,sol);\n'+
 ' float coc=min(uCocMax,uCoc*abs(w-uCamZ)*.42+bell*uMess*(1.+9.*aR.y*aR.y))*(1.-P*.97)*(1.-sol*.9);\n'+
 ' float px=uBase*s*uCamZ/w*(1.+sol*uSolP);float a=(.3+.95*pl)*spark*mix(.16,1.,facing)*(1.-fog*.55);\n'+
 ' a*=mix(uG.x,uG.y,m);a=mix(a,max(a,.85*spark),max(tag,0.));\n'+
 ' if(e>0.)a=mix(a,max(a,1.05),e);else a*=mix(1.,.42,-e);\n'+
-' c=mix(c,mix(uLA,uLB,m),sol*(.62+.2*clamp(e,0.,1.)));a=max(a,sol*(uSolF+.3*e));a*=mix(1.,.55,bell*uMess);a*=mix(uDimA,uDimB,m);\n'+
+' c=mix(c,vec3(1.,.44,.27),nh*.92);a=max(a,nh*.92);px*=1.+nh*.22;c=mix(c,mix(uLA,uLB,m),sol*(.62+.2*clamp(e,0.,1.)));a=max(a,sol*(uSolF+.3*e));a*=mix(1.,.55,bell*uMess);a*=mix(uDimA,uDimB,m);\n'+
 ' a*=pow(px/(px+coc),1.35);px+=coc;\n'+
 ' if(px<1.5){a*=(px/1.5)*(px/1.5);px=1.5;}\n'+
 ' if(isDot){c=uDot;a=uDotA;px=uBase*2.9*uCamZ/w;coc=0.;}\n'+
 ' if(P>.5){c=isDot?uStamp:uInk*(.7+.5*clamp(-e,0.,1.));a=isDot?0.:min(1.,a*1.5)*smoothstep(uPX,uPX+140.,sp.x);}\n'+
-' float hd=smoothstep(.6,1.,mix(uSolA,uSolB,m))*(1.-er);float mk=maskAt(sp);a*=isDot?pow(smoothstep(.25,.95,mk),2.):pow(mk,1.5+.5*hd);\n'+
-' if(uPass>=0.&&abs(step(.5,sol)-uPass)>.5){gl_Position=vec4(2.,2.,2.,1.);gl_PointSize=1.;vB=vec2(0.);vC=vec4(0.);return;}\n if(!isDot)a*=mix(1.,smoothstep(0.,.12,n.z),hd);gl_PointSize=min(px,uPxMax);vB=vec2(isDot?-1.:(hd>0.?-hd:clamp(coc/7.,0.,1.)),P);vC=vec4(c,clamp(a,0.,1.));\n'+
+' float rc=0.;if(uRipC>0.&&!isDot){rc=clamp(gRip*uRipC,0.,1.);c=mix(c,vec3(1.,.44,.27),rc);a=max(a,rc);px*=1.+rc*.9;}\n'+
+' float hd=smoothstep(.6,1.,mix(uSolA,uSolB,m))*(1.-er);float mk=max(maskAt(sp),rc*.8);a*=isDot?pow(smoothstep(.25,.95,mk),2.):pow(mk,1.5+.5*hd);\n'+
+' if(uPass>=0.&&abs(step(.5,sol)-uPass)>.5){gl_Position=vec4(2.,2.,2.,1.);gl_PointSize=1.;vB=vec2(0.);vC=vec4(0.);return;}\n if(!isDot)a*=mix(1.,smoothstep(0.,.12,n.z),hd);a*=1.+fx.z*.3;gl_PointSize=min(px*(1.+fx.z*.22),uPxMax);vB=vec2(isDot?-1.:(hd>0.?-hd:clamp(coc/7.,0.,1.)),P);vC=vec4(c,clamp(a,0.,1.));\n'+
 '}';
 var VSA='#version 300 es\nprecision highp float;\nlayout(location=0)in vec3 aP;layout(location=1)in vec4 aR;\n'+
 'uniform float uTime,uBase,uF,uAsp,uFly,uCamZ,uAmb,uCocMax;uniform vec3 uCam,uCol,uInk;\n'+MASK+
 'out vec4 vC;out vec2 vB;\n'+
 'void main(){float zz=mod(aP.z-uFly*(.55+.45*aR.x),13.);float w=zz+.45;vec3 v=vec3(aP.x+sin(uTime*.07+aR.x*6.28)*.12,aP.y+cos(uTime*.06+aR.y*6.28)*.12,0.)-uCam;\n'+
-' gl_Position=vec4(v.x*uF/uAsp,v.y*uF,0.,w);vec2 sp=vec2(v.x*uF/uAsp/w*.5+.5,.5-v.y*uF/w*.5)*uRes;\n'+
+' gl_Position=vec4(v.x*uF/uAsp,v.y*uF,0.,w);vec2 sp=vec2(v.x*uF/uAsp/w*.5+.5,.5-v.y*uF/w*.5)*uRes;vec3 fx=pushAt(sp,aR.y);sp+=fx.xy;gl_Position.x+=fx.x/uRes.x*2.*w;gl_Position.y-=fx.y/uRes.y*2.*w;\n'+
 ' float dz=abs(w-uCamZ);float coc=min(uCocMax,dz*dz*.12*uBase*.5);float px=uBase*.9*uCamZ/max(w,2.2);\n'+
 ' float a=uAmb*smoothstep(13.4,9.,w)*smoothstep(1.6,4.2,w)*pow(px/(px+coc),1.15);px+=coc;if(px<1.5){a*=(px/1.5);px=1.5;}\n'+
 ' a*=maskAt(sp);\n'+
 ' float P=paperAt(sp.y,aR.x);vec3 c=uCol;if(P>.5)a=0.;\n'+
-' gl_PointSize=min(px,14.);vB=vec2(0.,P);vC=vec4(c,clamp(a,0.,1.));}';
+' a*=1.+fx.z*.35;gl_PointSize=min(px*(1.+fx.z*.22),14.);vB=vec2(0.,P);vC=vec4(c,clamp(a,0.,1.));}';
 var FS='#version 300 es\nprecision highp float;\nin vec4 vC;in vec2 vB;uniform float uOcc;out vec4 o;\n'+
 'void main(){vec2 c=gl_PointCoord*2.-1.;float r2=dot(c,c);if(r2>1.)discard;float q=1.-r2;float hs=mix(q*q*q,smoothstep(0.,.22,q)*(.42+.3*r2),max(vB.x,0.));float hr=max(-vB.x,0.);float a=mix(hs,smoothstep(0.,.3,q),hr)*vC.a;float occ=mix(mix(uOcc,1.,vB.y),1.,hr);o=vec4(vC.rgb*a,a*occ);}';
 
@@ -144,9 +156,10 @@ function uploadExtras(rd,d){
 
 /* ---------- 量測 ---------- */
 var W=0,H=0,dead=false,paperEl=document.getElementById('paper');
-function measure(){
+function measure(keepH1){
   if(dead)return;
-  RA.fitH1();
+  /* 只有內容變動時不用重算大標：字寬不會變 */
+  if(!keepH1)RA.fitH1();
   var vw=innerWidth,nh=cv.clientHeight||innerHeight,pw=Math.round(vw*DPR),ph=Math.round(nh*DPR);
   /* 寬度變或高度變超過 160 裝置像素才重配，網址列收合不重建 */
   if(pw!==W||Math.abs(ph-H)>160*DPR||!C.vh){W=pw;H=ph;cv.width=W;cv.height=H;C.vh=nh;gl.viewport(0,0,W,H)}
@@ -160,30 +173,86 @@ function setBg(A,B,t){var m=t*t*(3-2*t),a=A.bgc,b=B.bgc,s='rgb('+Math.round((a[0
   if(s!==lastBg){lastBg=s;root.style.backgroundColor=s}}
 
 /* ---------- 繪製 ---------- */
-var MORPH_S=1.2,motion=RA.motion,yD=scrollY,sD=0,intro=(scrollY<40&&motion)?0:1,introDelay=.75,mx=0,my=0,tx=0,ty=0,time=0,last=0,running=false,count=N;
+var QW_M=.2,QD_M=1.7,MORPH_S=1.2,motion=RA.motion,yD=scrollY,sD=0,intro=(scrollY<40&&motion)?0:1,introDelay=.75,mx=0,my=0,tx=0,ty=0,time=0,last=0,running=false,count=N;
 var quality={coc:1,amb:true};
+/* 粒子碰得到：JS 只算一組彈簧跟一圈漣漪，位移在著色器裡做。動態關或畫質降到第 2 階以下就不做 */
+var ptX=0,ptY=0,pgX=0,pgY=0,pS=0,pV=0,pTo=0,pUntil=0,ptSeen=false,ptR=150,ptA=78,ripX=0,ripY=0,ripR=0,ripA=0,ripK=2.7,ripC=0,qLv=0,qTo=0,qS=0,ptM=0,camx=0,camy=0,nNarrow=null,nHv=-1,nLv=new Float32Array(6),nTo=new Float32Array(6),nbArr=new Float32Array(24);
+function fxAllowed(){return motion&&steps<2&&!dead}
+function fxStep(ds,now){
+  if(!fxAllowed()){pS=pV=ripA=0;pTo=0;return false}
+  if(pTo&&now>pUntil)pTo=0;
+  /* 離小球越近，排斥越換成隆起；半徑跟著收，交接時不會突然跳 */
+  ptM+=((nearNeeds()?1:0)-ptM)*(1-Math.exp(-ds*6));ptR=C.MOBILE?104-48*ptM:150-78*ptM;ptA=C.MOBILE?38:52;
+  var r=1-Math.exp(-ds*16);ptX+=(pgX-ptX)*r;ptY+=(pgY-ptY)*r;
+  /* 欠阻尼：鬆手時會稍微往回超過一點，才有彈回來的感覺 */
+  var n=ds>.03?2:1,h=ds/n;for(var i=0;i<n;i++){pV+=((pTo-pS)*62-pV*8.5)*h;pS+=pV*h}
+  if(!pTo&&Math.abs(pS)<.004&&Math.abs(pV)<.02){pS=pV=0}
+  if(ripA>0){ripR+=ds*(300+ripR*.5);ripA*=Math.exp(-ds*ripK);if(ripA<.5){ripA=0;ripC=0}}
+  return pS!==0||pTo!==0||ripA>0;
+}
+function nStep(ds){var any=false;for(var i=0;i<6;i++){var to=Math.max(nTo[i],i===nHv?.42:0),d=to-nLv[i];if(Math.abs(d)<.004)nLv[i]=to;else{nLv[i]+=d*(1-Math.exp(-ds*7));any=true}}return any}
 function poseU(uR,uO,st,shape,y,intr){var p=C.pose(st,shape,y,time,intr,mx,my);gl.uniformMatrix3fv(uR,false,p.r);gl.uniform4f(uO,p.x,p.y,0,p.s);return p.s}
-/* 需求標籤：黏在小球上，合成時一起飛向應用並淡出 */
-var needsSrc=document.getElementById('needsL'),needsEl=needsSrc&&needsSrc.cloneNode(true),needsLi=needsEl?[].slice.call(needsEl.children):[];
-if(needsEl){needsEl.id='needsFly';needsEl.setAttribute('aria-hidden','true');document.body.appendChild(needsEl)}
+/* 需求標籤：貼在小球下緣，合成時一起飛向應用並淡出 */
+var needsSrc=document.getElementById('needsL'),needsEl=needsSrc&&needsSrc.cloneNode(true),needsLi=needsEl?[].slice.call(needsEl.children):[],hitLi=[],needsH2=document.querySelector('#needs h2'),barEl=document.getElementById('bar');
+/* 飛行標籤只給指標用：鍵盤與讀屏走原本那份 #needsL。按下不搶焦點，aria-hidden 裡不會留著焦點 */
+if(needsEl){
+  needsEl.id='needsFly';needsEl.setAttribute('aria-hidden','true');[].forEach.call(needsEl.querySelectorAll('button'),function(b){b.tabIndex=-1});
+  /* 球本身也點得到：熱區放在標籤前面，疊到時標籤優先 */
+  var nKeys=needsLi.map(function(li){return li.querySelector('[data-need]').getAttribute('data-need')});
+  nKeys.forEach(function(k,j){var h=document.createElement('li');h.className='nhit';h.setAttribute('data-need',k);needsEl.insertBefore(h,needsEl.firstChild);hitLi[j]=h});
+  needsEl.addEventListener('mousedown',function(e){e.preventDefault()});
+  needsEl.addEventListener('pointerover',function(e){if(e.pointerType!=='mouse')return;var b=e.target.closest('[data-need]');nHv=b?nKeys.indexOf(b.getAttribute('data-need')):-1;wake()});
+  needsEl.addEventListener('pointerout',function(){nHv=-1;wake()});
+  document.body.appendChild(needsEl);
+}
 function scr(p,x,y,z){var m=p.r,wx=(m[0]*x+m[3]*y+m[6]*z)*p.s+p.x,wy=(m[1]*x+m[4]*y+m[7]*z)*p.s+p.y,wz=(m[2]*x+m[5]*y+m[8]*z)*p.s,w=C.CAMZ-wz;
-  return[(wx*C.F/C.asp/w*.5+.5)*C.vw,(.5-wy*C.F/w*.5)*C.vh]}
+  return[((wx-camx)*C.F/C.asp/w*.5+.5)*C.vw,(.5-(wy-camy)*C.F/w*.5)*C.vh]}
+function needsIdx(){var ST=C.ST;for(var i=0;i<ST.length;i++)if(ST[i].id==='needs')return i;return -1}
 function placeNeeds(y,s){
   if(!needsEl)return;
-  var k=-1,ST=C.ST,i;for(i=0;i<ST.length;i++)if(ST[i].id==='needs')k=i;
-  var ok=k>=0&&ST[k].shape==='needs'&&ready[SHAPE_IDX.needs];
-  document.documentElement.classList.toggle('needs-on',!!ok);
-  if(!ok)return;
+  var k=needsIdx(),ST=C.ST,i;
+  /* 動態關閉時不飛：#needsL 就是一般列表，亮球照樣由 setNeeds 更新 */
+  var ok=motion&&k>=0&&ST[k].shape==='needs'&&ready[SHAPE_IDX.needs];
+  root.classList.toggle('needs-on',!!ok);
+  if(!ok){root.classList.remove('needs-live');return}
   var inP=Math.max(0,Math.min(1,(s-(k-1)-.55)/.45)),out=Math.max(0,Math.min(1,s-k));
-  if(!motion){inP=Math.abs(s-k)<.5?1:0;out=0}
   var vis=inP>0&&out<1;needsEl.style.visibility=vis?'visible':'hidden';
+  /* 標題讀到了才可以點；不能點的時候 #needsL 在原位接手，畫面上永遠有點得到的那一份 */
+  var live=vis&&inP>.6&&out<.25&&(!needsH2||needsH2.getBoundingClientRect().top<C.vh*.62);
+  needsEl.classList.toggle('live',live);root.classList.toggle('needs-live',live);
   if(!vis)return;
-  var p=C.pose(ST[k],'needs',y,time,false,mx,my),nx=ST[k+1],q=C.pose(nx,nx.shape,y,time,false,mx,my),e=out*out*(3-2*out),c=scr(q,0,0,0);
-  needsLi.forEach(function(li,j){var b=C.NEEDS[j],a=scr(p,b[0],b[1],0),hw=li.offsetWidth/2+6,o=Math.min(inP,1-Math.min(1,out*1.7)),sc=1-e*.45;
-    a[0]=Math.max(hw,Math.min(C.vw-hw,a[0]));li.style.opacity=o.toFixed(3);li.style.transform='translate3d('+(a[0]+(c[0]-a[0])*e).toFixed(1)+'px,'+(a[1]+(c[1]-a[1])*e).toFixed(1)+'px,0) translate(-50%,-50%) scale('+sc.toFixed(3)+')'});
+  var p=C.pose(ST[k],'needs',y,time,false,mx,my),nx=ST[k+1],q=C.pose(nx,nx.shape,y,time,false,mx,my),mob=C.MOBILE,oe=mob?Math.max(0,(out-.25)/.75):out,e=oe*oe*(3-2*oe),c=scr(q,0,0,0);
+  var o=Math.min(Math.min(1,inP/.6),1-Math.max(0,Math.min(1,(out-.25)/(mob?.12:.34)))),sc=1-e*.45;
+  var bh=mob&&barEl&&barEl.classList.contains('show')&&!barEl.classList.contains('yield')?60:0,yMax=C.vh-bh-24,yMin=mob?24:72;
+  /* 手機上不要超出插槽，下面就是說明文字 */
+  if(mob&&ST[k].st!==undefined)yMax=Math.min(yMax,Math.max(yMin+60,ST[k].st+ST[k].sh-y-12));
+  var LB=needsLi.map(function(li,j){var b=C.NEEDS[j],a=scr(p,b[0],b[1],0),g=scr(p,b[0],b[1]-b[2],0),r=Math.sqrt((g[0]-a[0])*(g[0]-a[0])+(g[1]-a[1])*(g[1]-a[1])),hh=li.offsetHeight/2;
+    /* 選取時球會鼓起來，標籤跟著讓 */
+    r=r*1.1+nLv[j]*.05*C.vh/(2*C.halfH);return{x:a[0],y:a[1]+r+hh+2,hw:li.offsetWidth/2,hh:Math.max(hh,23)+1,cx:a[0],cy:a[1],r:r}});
+  function clampL(a){a.x=Math.max(a.hw+6,Math.min(C.vw-a.hw-6,a.x));a.y=Math.max(yMin,Math.min(yMax,a.y))}
+  LB.forEach(clampL);
+  /* 窄螢幕標籤會撞：先左右讓、讓不開才上下讓，熱區不互蓋，也不壓到底部綠列 */
+  for(var it=0;it<28;it++){var moved=false;for(i=0;i<6;i++)for(var jj=i+1;jj<6;jj++){var u=LB[i],v=LB[jj],dx=v.x-u.x,dy=v.y-u.y,ox=u.hw+v.hw+4-Math.abs(dx),oy=u.hh+v.hh-Math.abs(dy);
+    if(ox<=0||oy<=0)continue;moved=true;
+    if(it<6&&ox<oy){var sx=(dx<0?-1:1)*ox/2;u.x-=sx;v.x+=sx}else{var sy=(dy<0?-1:1)*(oy/2+.5);u.y-=sy;v.y+=sy}clampL(u);clampL(v)}
+    /* 也讓開別的球，字才不會壓在球面上 */
+    for(i=0;i<6;i++)for(var bj=0;bj<6;bj++){if(i===bj)continue;var w=LB[i],bb=LB[bj],nx0=Math.max(w.x-w.hw,Math.min(bb.cx,w.x+w.hw)),ny0=Math.max(w.y-11,Math.min(bb.cy,w.y+11)),ddx=nx0-bb.cx,ddy=ny0-bb.cy,dd=bb.r*bb.r-ddx*ddx-ddy*ddy;
+      if(dd<=0)continue;moved=true;w.x+=(w.x<bb.cx?-1:1)*Math.min(14,Math.sqrt(dd)*.6+1);clampL(w)}
+    if(!moved)break}
+  needsLi.forEach(function(li,j){var a=LB[j],h=hitLi[j],d=Math.round(a.r*2);li.style.opacity=o.toFixed(3);li.style.transform='translate3d('+(a.x+(c[0]-a.x)*e).toFixed(1)+'px,'+(a.y+(c[1]-a.y)*e).toFixed(1)+'px,0) translate(-50%,-50%) scale('+sc.toFixed(3)+')';
+    if(h._d!==d){h._d=d;h.style.width=h.style.height=d+'px'}h.style.transform='translate3d('+(a.cx-a.r).toFixed(1)+'px,'+(a.cy-a.r).toFixed(1)+'px,0)'});
 }
+/* 手機上「回去改」的落點：球停好、標籤點得到的位置。桌機原生錨點就夠 */
+RA.needsY=function(){
+  if(!C.MOBILE)return null;
+  if(!motion){var lb=needsSrc&&needsSrc.getBoundingClientRect();return lb?Math.round(lb.bottom+scrollY-C.vh+80):null}
+  var k=needsIdx(),st=C.ST[k];if(k<0||st.st===undefined||st.shape!=='needs'||!ready[SHAPE_IDX.needs])return null;
+  return Math.round(Math.max(st.st+st.sh/2-C.vh/2,st.start+st.mw));
+};
 function render(){
   if(dead||!randOK||!C.ST.length)return;
+  var fxOn=motion&&steps<2;
+  camx=mx*.16;camy=-my*.1;
   placeNeeds(yD,sD);
   var ST=C.ST,y=yD,s=sD,a=Math.min(ST.length-1,Math.floor(s)),T=s-a,b=Math.min(ST.length-1,a+1);
   if(!motion){T=T>=.5?1:0}
@@ -202,18 +271,21 @@ function render(){
   var ry=scrollY;C.fillRects(ry);
   var seamA=-1e5,seamB=-1e5,vw=C.vw,vh=C.vh,mob=C.MOBILE;
   if(paperEl){var pr=paperEl.getBoundingClientRect();seamA=pr.top;seamB=pr.bottom}
-  var base=(DPR>1.2?1.85:2.45)*DPR,camx=mx*.16,camy=-my*.1,fly=ry/(mob?620:760);
+  var base=(DPR>1.2?1.85:2.45)*DPR,fly=ry/(mob?620:760);
   var wm=T*T*(3-2*T),ac=A.world.ambc,bc=B.world.ambc,wa=A.world,wb=B.world;
   /* 環境層 */
   if(quality.amb&&ambOK){
     gl.useProgram(PA.p);var ua=PA.u;gl.bindVertexArray(vaoA);
     gl.uniform1f(ua.uTime,time);gl.uniform1f(ua.uBase,base*.9);gl.uniform1f(ua.uF,C.F);gl.uniform1f(ua.uAsp,C.asp);gl.uniform1f(ua.uFly,fly);gl.uniform1f(ua.uCamZ,C.CAMZ);gl.uniform1f(ua.uAmb,.8);gl.uniform1f(ua.uCocMax,(mob?3:5)*quality.coc);
     gl.uniform3f(ua.uCam,camx,camy,0);gl.uniform3f(ua.uCol,ac[0]+(bc[0]-ac[0])*wm,ac[1]+(bc[1]-ac[1])*wm,ac[2]+(bc[2]-ac[2])*wm);gl.uniform3fv(ua.uInk,C.INK);
-    gl.uniform1f(ua.uOcc,.35);gl.uniform2f(ua.uRes,vw,vh);gl.uniform4fv(ua.uR,C.rectArr);gl.uniform1fv(ua.uRD,C.rectDim);gl.uniform2f(ua.uSeam,seamA,seamB);
+    gl.uniform4f(ua.uPtr,fxOn?ptX:0,fxOn?ptY:0,ptR,fxOn?pS*ptA*(1-ptM):0);gl.uniform4f(ua.uRip,ripX,ripY,ripR,fxOn?ripA:0);gl.uniform1f(ua.uOcc,.35);gl.uniform2f(ua.uRes,vw,vh);gl.uniform4fv(ua.uR,C.rectArr);gl.uniform1fv(ua.uRD,C.rectDim);gl.uniform2f(ua.uSeam,seamA,seamB);
     gl.drawArrays(gl.POINTS,0,Math.round(NAMB*Math.max(.4,countScale)));
   }
   /* 主體 */
   gl.useProgram(P.p);var u=P.u;bindPair(ia,ib);
+  gl.uniform4f(u.uPtr,fxOn?ptX:0,fxOn?ptY:0,ptR,fxOn?pS*ptA*(1-ptM):0);gl.uniform1f(u.uBul,fxOn?Math.max(0,pS*ptM):0);gl.uniform4f(u.uRip,ripX,ripY,ripR,fxOn?ripA:0);gl.uniform1f(u.uRipC,fxOn?ripC:0);
+  var nsA=sa==='needs',nsB=sb==='needs';gl.uniform1f(u.uNS,nsA?1:nsB?2:0);
+  if(nsA||nsB){for(var nj=0;nj<6;nj++){var nb=C.NEEDS[nj];nbArr[nj*4]=nb[0];nbArr[nj*4+1]=nb[1];nbArr[nj*4+2]=nb[2];nbArr[nj*4+3]=nLv[nj]}gl.uniform4fv(u.uNB,nbArr)}
   gl.uniform1f(u.uT,T);gl.uniform1f(u.uTime,time);gl.uniform1f(u.uBase,base);gl.uniform1f(u.uF,C.F);gl.uniform1f(u.uAsp,C.asp);gl.uniform1f(u.uCamZ,C.CAMZ);gl.uniform1f(u.uCoc,mob?2.6:3.6);gl.uniform1f(u.uAmp,introOn?.22:.42);gl.uniform1f(u.uNa,NA);
   gl.uniform1f(u.uCocMax,(mob?15:30)*quality.coc);gl.uniform1f(u.uPxMax,mob?26:48);
   gl.uniform3f(u.uDir,Math.sin(a*2.4+.4),Math.cos(a*1.7),.3);
@@ -221,7 +293,7 @@ function render(){
   gl.uniform3fv(u.uFA,wa.farc);gl.uniform3fv(u.uLA,wa.litc);gl.uniform3fv(u.uCA,wa.accc);gl.uniform3fv(u.uFB,wb.farc);gl.uniform3fv(u.uLB,wb.litc);gl.uniform3fv(u.uCB,wb.accc);
   var d0=wa.dotc,d1=wb.dotc;gl.uniform3f(u.uDot,d0[0]+(d1[0]-d0[0])*wm,d0[1]+(d1[1]-d0[1])*wm,d0[2]+(d1[2]-d0[2])*wm);gl.uniform3fv(u.uInk,C.INK);gl.uniform3fv(u.uStamp,C.STAMP);
   gl.uniform2f(u.uG,wa.g,wb.g);
-  gl.uniform1f(u.uWA,introOn?.05:(A.wave||0));gl.uniform1f(u.uWB,B.wave||0);gl.uniform1f(u.uDimA,introOn?3.:A.dim);gl.uniform1f(u.uDimB,B.dim);gl.uniform1f(u.uMess,(A.fix&&B.fix)?0:(A.fix||B.fix)?.12:1);gl.uniform1f(u.uSolF,.8);gl.uniform1f(u.uPX,vw>=768?vw*.6:-999);gl.uniform1f(u.uSolA,sa==='glyph'?1:0);gl.uniform1f(u.uSolB,sb==='glyph'?1:0);gl.uniform1f(u.uDotA,(A.fix?0:1)*(1-wm)+(B.fix?0:1)*wm);
+  var qa=A.id==='price'?qLv+qS:0,qb=B.id==='price'?qLv+qS:0,qw=mob?QW_M:.05,qd=mob?QD_M:.45;gl.uniform1f(u.uWA,introOn?.05:(A.wave||0)+qa*qw);gl.uniform1f(u.uWB,(B.wave||0)+qb*qw);gl.uniform1f(u.uDimA,introOn?3.:A.dim*(1+qa*qd));gl.uniform1f(u.uDimB,B.dim*(1+qb*qd));if(mob&&(qa||qb))gl.uniform1f(u.uBase,base*(1+(qa*(1-wm)+qb*wm)*.32));gl.uniform1f(u.uMess,(A.fix&&B.fix)?0:(A.fix||B.fix)?.12:1);gl.uniform1f(u.uSolF,.8);gl.uniform1f(u.uPX,vw>=768?vw*(A.px+(B.px-A.px)*wm):-999);gl.uniform1f(u.uSolA,sa==='glyph'?1:0);gl.uniform1f(u.uSolB,sb==='glyph'?1:0);gl.uniform1f(u.uDotA,(A.fix?0:1)*(1-wm)+(B.fix?0:1)*wm);
   var sca=poseU(u.uRA,u.uOA,A,sa,y,introOn),scb=poseU(u.uRB,u.uOB,B,sb,y,false),gs=sb==='glyph'?scb:sa==='glyph'?sca:0;
   count=Math.round(N*countScale);
   /* 字面點徑依字的實際大小與顆數算：滿載覆蓋約 6 倍才融成連續的面；降階時覆蓋跟著降，填充率才真的變少 */
@@ -309,12 +381,13 @@ function frame(now){
   mx+=(tx-mx)*(1-Math.exp(-ds*3.5));my+=(ty-my)*(1-Math.exp(-ds*3.5));
   if(glyphReady&&intro<1){if(introDelay>0)introDelay-=ds;else intro=Math.min(1,intro+ds/1.5)}
   var pick=C.pick;if(pick.t<1)pick.t=Math.min(1,pick.t+ds/.95);
+  var fxBusy=fxStep(ds,now),nBusy=nStep(ds),qBusy=Math.abs(qTo-qLv)>.003||qS>.004;qLv=Math.abs(qTo-qLv)>.003?qLv+(qTo-qLv)*(1-Math.exp(-ds*2.6)):qTo;qS=qS>.004?qS*Math.exp(-ds*1.5):0;
   if(steps>=TOP&&idle>3000)setDPR(1);
   render();
   if(SLOW){var t0=performance.now();while(performance.now()-t0<SLOW){}}
   if(DEBUG){window.__sD=sD;dbg(now,dt)}
   if(motion&&!half)adapt(dt);
-  var busy=intro<1||pick.t<1||Math.abs(y-yD)>.5||Math.abs(s-sD)>.002;
+  var busy=intro<1||pick.t<1||Math.abs(y-yD)>.5||Math.abs(s-sD)>.002||fxBusy||nBusy||qBusy;
   if(busy)lastInput=now;
   if(idle>6000&&!busy&&!qs.has('noidle')){running=false;cancelAnimationFrame(rafId);rafId=0;last=0}
 }
@@ -325,11 +398,33 @@ function drawOnce(){if(drawPending)return;drawPending=true;requestAnimationFrame
 
 C.onPick=function(i,from,name){if(!motion){drawOnce();return}C.pick={stage:i,from:from,to:name,t:0};wake()};
 RA.pick=C.pickHook;
-RA.relayout=function(){if(!C.vh)return;measure();wake();if(!motion)drawOnce()};
+RA.setNeeds=function(a){for(var i=0;i<6;i++){nTo[i]=a[i]?1:0;if(!motion)nLv[i]=nTo[i]}if(motion)wake();else drawOnce()};
+if(RA.needsOn)RA.setNeeds(RA.needsOn);
+RA.relayout=function(){if(!C.vh)return;measure(true);wake();if(!motion)drawOnce()};
+/* 報價工具碰得到粒子：答一題一圈漣漪、紙上的粒子跟著濃一點；蓋章那一下帶珊瑚色的大擴散。動態關閉時不做 */
+RA.ripple=function(x,y,a,k,c){if(!fxAllowed())return;ripX=x;ripY=y;ripR=0;ripA=a;ripK=k||2.7;ripC=c||0;wake()};
+RA.quoteLevel=function(v){if(motion&&!dead){qTo=v;wake()}};
+/* 整片波湧一次再回落 */
+RA.quoteSurge=function(v){if(motion&&!dead){qS=Math.max(qS,v);wake()}};
 RA.setMotion=function(m){motion=m;if(m){intro=1;wake();start()}else{stop();drawOnce()}};
 addEventListener('scroll',function(){if(motion)wake();else drawOnce()},{passive:true});
-if(matchMedia('(hover:hover) and (pointer:fine)').matches)addEventListener('pointermove',function(e){tx=e.clientX/innerWidth*2-1;ty=e.clientY/innerHeight*2-1;wake()},{passive:true});
-var rzT=0;addEventListener('resize',function(){clearTimeout(rzT);rzT=setTimeout(function(){measure();wake();if(!motion)drawOnce()},120)});
+/* 小球只有八十像素寬：這裡不推粒子，只讓球面起伏，不把使用者正要點的東西推走 */
+function nearNeeds(){var k=needsIdx();return k>=0&&C.ST[k].shape==='needs'&&Math.abs(sD-k)<.45}
+function aim(e,hold){pgX=e.clientX;pgY=e.clientY;if(!ptSeen||!pS){ptX=pgX;ptY=pgY;ptSeen=true}pTo=1;pUntil=performance.now()+hold}
+if(matchMedia('(hover:hover) and (pointer:fine)').matches){
+  addEventListener('pointermove',function(e){tx=e.clientX/innerWidth*2-1;ty=e.clientY/innerHeight*2-1;if(fxAllowed()&&e.pointerType==='mouse')aim(e,1100);wake()},{passive:true});
+  document.documentElement.addEventListener('pointerleave',function(){pTo=0},{passive:true});
+}
+/* 手指與點按：一圈漣漪加短暫排斥；被動監聽，不擋捲動 */
+addEventListener('pointerdown',function(e){
+  if(!fxAllowed())return;
+  ripX=e.clientX;ripY=e.clientY;ripR=0;ripA=nearNeeds()?14:C.MOBILE?34:44;ripK=2.7;ripC=0;
+  if(e.pointerType!=='mouse')aim(e,260);
+  wake();
+},{passive:true});
+/* 寬窄跨過門檻才重做小球；形狀點數不變，換一份 buffer 就好 */
+function syncNeedsLayout(){var n=innerWidth<560;if(n===nNarrow)return false;nNarrow=n;C.setNeedsNarrow(n);return true}
+var rzT=0;addEventListener('resize',function(){clearTimeout(rzT);rzT=setTimeout(function(){if(syncNeedsLayout()&&!dead&&ready[SHAPE_IDX.needs]){ready[SHAPE_IDX.needs]=0;send(['needs'],null,false)}measure();wake();if(!motion)drawOnce()},120)});
 addEventListener('load',function(){if(C.vh)measure()});
 $$('details').forEach(function(d){d.addEventListener('toggle',function(){if(!C.vh)return;measure();wake();if(!motion)drawOnce()})});
 document.addEventListener('visibilitychange',function(){last=0;if(document.hidden)stop();else if(motion){wake();start()}});
@@ -363,7 +458,7 @@ if(DEBUG){
       var dark=tl>.5,wp95=dark?ls[ls.length*.95|0]:ls[ls.length*.05|0],wp995=dark?ls[ls.length*.995|0]:ls[ls.length*.005|0];
       res.push({t:r.e.textContent.trim().slice(0,10),fs:getComputedStyle(r.e).fontSize,p95:+c2(wp95).toFixed(2),p995:+c2(wp995).toFixed(2)})});
     return res};
-  window.__state=function(){return{sD:sD,yD:yD,ST:C.ST.map(function(s){return{id:s.id,shape:s.shape,start:Math.round(s.start)}}),ready:ready,running:running,intro:intro,W:W,H:H,DPR:DPR}};
+  window.__state=function(){return{pS:pS,ripA:ripA,ptX:ptX,ptY:ptY,steps:steps,motion:motion,nLv:[].slice.call(nLv),sD:sD,yD:yD,ST:C.ST.map(function(s){return{id:s.id,shape:s.shape,start:Math.round(s.start)}}),ready:ready,running:running,intro:intro,W:W,H:H,DPR:DPR}};
 }
 
 /* ---------- 啟動：形狀與亂數都在 worker；失敗就分段在主執行緒做 ---------- */
@@ -390,7 +485,7 @@ function extras(N,NAMB,mk){
 }
 var WSRC='('+function(){var L=/*LIB*/null,EX=/*EXTRAS*/null,RNG=/*RNG*/null;self.onmessage=function(e){var m=e.data;
   if(m.extras){var x=EX(m.N,m.NAMB,RNG);self.postMessage({rd:x.rd,d:x.d},[x.rd.buffer,x.d.buffer])}
-  for(var i=0;i<m.names.length;i++){var n=m.names[i],b=L.gen(n,m.N,m.NA,m.G);self.postMessage({name:n,buf:b},[b])}}}.toString()+')()';
+  for(var i=0;i<m.names.length;i++){var n=m.names[i],b=L.gen(n,m.N,m.NA,m.G,m.NB);self.postMessage({name:n,buf:b},[b])}}}.toString()+')()';
 function buildAll(){
   /* 開場兩個最先，其他按捲動順序 */
   var names=SHAPE_ORDER.slice(),my=gen;pend=0;
@@ -418,14 +513,14 @@ function send(names,G,ex){
       worker.onerror=function(){worker=null;if(dead)return;var g=fontOK()?glyphMask():null;fallback(g?names:names.filter(function(n){return n!=='glyph'}),g,!randOK)};
     }catch(e){worker=null}
   }
-  if(worker){pend+=names.length+(ex?1:0);worker.postMessage({names:names,N:N,NA:NA,NAMB:NAMB,G:G,extras:ex},G?[G.a.buffer]:[])}
+  if(worker){pend+=names.length+(ex?1:0);worker.postMessage({names:names,N:N,NA:NA,NAMB:NAMB,G:G,NB:C.NEEDS,extras:ex},G?[G.a.buffer]:[])}
   else fallback(names,G,ex);
 }
 function fallback(names,G,ex){
   lib=lib||shapesLib();var i=0,my=gen;
-  function step(){if(i>=names.length||dead||my!==gen)return;var n=names[i++];if(!ready[SHAPE_IDX[n]])upload(n,lib.gen(n,N,NA,G));setTimeout(step,24)}
+  function step(){if(i>=names.length||dead||my!==gen)return;var n=names[i++];if(!ready[SHAPE_IDX[n]])upload(n,lib.gen(n,N,NA,G,C.NEEDS));setTimeout(step,24)}
   if(ex)setTimeout(function(){if(dead||my!==gen)return;var x=extras(N,NAMB,rng);uploadExtras(x.rd,x.d);setTimeout(step,24)},0);else setTimeout(step,0);
 }
-function boot(){measure();yD=scrollY;sD=C.stageCoord(yD);buildAll();if(motion)start();else drawOnce()}
+function boot(){syncNeedsLayout();measure();yD=scrollY;sD=C.stageCoord(yD);buildAll();if(motion)start();else drawOnce()}
 try{initGL(boot)}catch(e){noGL()}
 })();

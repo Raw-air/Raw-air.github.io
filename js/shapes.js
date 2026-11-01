@@ -198,7 +198,7 @@ function makeApp(n){
   s.add(8,disc(.3,-.76,.11,th+.016,1,1));
   return{d:s.bake(n),dot:[.3,-.76,th+.04,.06]};
 }
-/* 需求小球：每顆是客人講的一件事；位置與 RA.C.NEEDS 共用 */
+/* 需求小球：每顆是客人講的一件事；位置由 RA.C.NEEDS 傳進來，窄螢幕是另一組 */
 function makeNeeds(n){
   var s=new Shape(),B=NEEDS;
   B.forEach(function(b,i){var cx=b[0],cy=b[1],r=b[2],t=i%2?1:0;
@@ -272,7 +272,8 @@ function encode(res,n,Na,perm){
 }
 function makePerm(n,Na){var m=n-Na,p=new Uint32Array(m),i,r=rng(20261101);for(i=0;i<m;i++)p[i]=i;for(i=m-1;i>0;i--){var j=r()*(i+1)|0,t=p[i];p[i]=p[j];p[j]=t}return p}
 var permCache=null;
-function gen(name,n,Na,G){
+function gen(name,n,Na,G,NB){
+  if(NB)NEEDS=NB;
   var h=0;for(var c=0;c<name.length;c++)h=(h*31+name.charCodeAt(c))|0;
   R=rng(h^0x5bd1e995);
   if(!permCache||permCache.length!==n-Na)permCache=makePerm(n,Na);

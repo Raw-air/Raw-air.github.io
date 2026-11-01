@@ -292,14 +292,167 @@ html:not(.js) .mock+.mock{margin-top:10px}
 .tech{margin:14px 0 8px;font-size:15px;color:var(--soft)}
 .tech b{color:var(--ink);font-weight:600;margin-right:.5em}
 
-/* 需求小球的標籤：看不到粒子時是一般列表，粒子就緒後黏在小球上 */
-.needs-l{list-style:none;margin:16px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:8px}
-.needs-l li{padding:8px 12px;border-radius:999px;background:#14100EE6;border:1px solid #FFE7B855;color:#FFF3DC;font-size:15px;line-height:1.3;white-space:nowrap}
+/* 需求小球的標籤：看不到粒子時是一般列表，粒子就緒後貼在小球下緣 */
+.needs-l{list-style:none;margin:16px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:16px 8px}
 #needsFly{display:none}
-html.needs-on #needsL{visibility:hidden}
 html.needs-on #needsFly{display:block;position:fixed;inset:0;margin:0;pointer-events:none;z-index:3;visibility:hidden;overflow:hidden;contain:strict}
 #needsFly li{position:absolute;left:0;top:0;will-change:transform,opacity;opacity:0}
 #needs{padding-bottom:40px}
 #needs .slot{height:min(50svh,100vw)}
-@media (max-width:420px){.needs-l li{font-size:14px;padding:6px 10px}}
+/* 窄螢幕的小球是兩欄三列；平板要多留最下面一行標籤的高度。沒有繪圖層時只有示意圓，不用這麼高 */
+@media (max-width:559px){html:not(.no-gl) #needs .slot{height:min(126vw,82svh,620px)}}
+@media (min-width:560px) and (max-width:959px) and (min-height:561px){html:not(.no-gl) #needs .slot{height:min(60svh,100vw)}}
 @media (min-width:960px){#needs{min-height:170vh}#needs .slot{height:72vh;top:14vh}}
+.needs-s{margin-top:10px;font-size:16px;line-height:1.5;color:var(--ink)}
+.needs-s a{display:inline-flex;align-items:center;min-height:44px;margin-left:.4em;font-weight:600;text-underline-offset:4px}
+/* 一般列表時才是小方牌，熱區用 ::before 撐到 44px 以上 */
+.nd{position:relative;display:inline-flex;align-items:center;gap:5px;padding:6px 10px 6px 8px;background:#14100EF2;border:1px solid #FFE7B8A0;color:#FFF3DC;font:inherit;font-size:15px;line-height:1.3;letter-spacing:.02em;white-space:nowrap;transition:background .15s linear,color .15s linear,border-color .15s linear}
+button.nd{cursor:pointer}
+.nd::before{content:"";position:absolute;left:-1px;right:-1px;top:-7px;bottom:-7px}
+.nk{display:inline-block;width:1em;text-align:center;font-weight:600;color:var(--coral)}
+.nk::before{content:"+"}
+.nd[aria-pressed=true]{background:#FF8A6C;border-color:#FFD3C4;color:#201408;font-weight:600}
+.nd[aria-pressed=true] .nk{color:#201408}
+.nd[aria-pressed=true] .nk::before{content:"";display:inline-block;width:.34em;height:.68em;margin-bottom:.14em;border:solid currentColor;border-width:0 2px 2px 0;transform:rotate(42deg)}
+@media (hover:hover){button.nd:hover{border-color:#FFE7B8}}
+button.nd:active{transform:translateY(1px)}
+/* 貼在球上時是球的標註：沒有框，選取主要靠球自己亮，字只換色加勾 */
+#needsFly .nd{background:none;border:0;padding:3px 7px 3px 5px;text-shadow:0 0 4px #14100E,0 0 2px #14100E,0 0 7px #14100E}
+#needsFly .nd::before{top:-11px;bottom:-11px}
+#needsFly .nd[aria-pressed=true],#needsFly .nd[aria-pressed=true] .nk{background:none;color:#FFB7A2}
+#needsFly:not(.live) .nd:not([aria-pressed=true]) .nk{visibility:hidden}
+#needsFly .nhit{width:0;height:0;border-radius:50%;cursor:pointer;background:none}
+#needsFly.live .nd,#needsFly.live .nhit{pointer-events:auto}
+@media (hover:hover){#needsFly .nd:hover{color:#fff;text-decoration:underline;text-underline-offset:3px}}
+/* 列表與飛行標籤二選一：飛行那份點得到時才藏列表 */
+html.needs-on #needsL{transition:opacity .18s linear}
+html.needs-on.needs-live #needsL{opacity:0;pointer-events:none}
+html.needs-on.needs-kbd #needsL,html.gl-lost #needsL{opacity:1;pointer-events:auto}
+html.needs-kbd #needsFly,html.gl-lost #needsFly{display:none}
+@media (max-width:420px){.nd{font-size:14px}}
+
+/* 誠實報價：紙上的一張單子。左邊點，右邊（手機是下面）跟著寫 */
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+html:not(.js) #quote,html:not(.js) .js-only,html:not(.js) .nk{display:none}
+/* 印章：這一段唯一的紅，上面一枚，單子答完再蓋一枚 */
+.hq,.stamp{padding:2px 9px;border:2px solid var(--stamp);color:var(--stamp);font-weight:600;line-height:1.5;letter-spacing:.08em;transform:rotate(-5deg)}
+.hq{width:fit-content;margin:22px 0 2px 2px;font-size:18px}
+.hq+.price3{margin-top:14px}
+.price3 b{display:block;margin:0}
+.quote{margin-top:26px;scroll-margin-top:72px}
+.q-in{font-size:21px;font-weight:600;line-height:1.5;margin-bottom:12px}
+.q-in span{display:block;margin-top:4px;font-size:16px;font-weight:400;color:var(--psoft)}
+.q{position:relative;min-width:0;margin:0;padding:0 0 14px;border:0;border-top:1px solid rgba(28,39,51,.3)}
+.q.wait,.q[hidden]{display:none}
+.q legend{display:block;width:100%;padding:12px 0 10px;font-size:21px;font-weight:600;line-height:1.35}
+.q-n{display:block;font-size:14px;font-weight:400;color:var(--psoft)}
+.q-s,.q-ch{display:none}
+/* 選項：細線隔開的大字，不是一排問卷框。單選，圓點選到就變成跟小球同色的粒子球 */
+.q-o label{position:relative;display:block;cursor:pointer;border-top:1px solid rgba(28,39,51,.18)}
+.q-o input{position:absolute;left:0;top:0;width:100%;height:100%;margin:0;opacity:0;cursor:pointer;z-index:1}
+.q-o label>span{position:relative;display:block;min-height:58px;padding:9px 4px 9px 42px;color:var(--paper-ink);font-size:21px;font-weight:600;line-height:1.3;transition:transform .18s ease-out}
+.q-o label>span::before{content:"";position:absolute;left:4px;top:50%;width:24px;height:24px;margin-top:-12px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='22.0' cy='12.0' r='.85' fill='%231C2733'/%3E%3Ccircle cx='21.4' cy='15.4' r='.85' fill='%231C2733'/%3E%3Ccircle cx='19.7' cy='18.4' r='.85' fill='%231C2733'/%3E%3Ccircle cx='17.0' cy='20.7' r='.85' fill='%231C2733'/%3E%3Ccircle cx='13.7' cy='21.8' r='.85' fill='%231C2733'/%3E%3Ccircle cx='10.3' cy='21.8' r='.85' fill='%231C2733'/%3E%3Ccircle cx='7.0' cy='20.7' r='.85' fill='%231C2733'/%3E%3Ccircle cx='4.3' cy='18.4' r='.85' fill='%231C2733'/%3E%3Ccircle cx='2.6' cy='15.4' r='.85' fill='%231C2733'/%3E%3Ccircle cx='2.0' cy='12.0' r='.85' fill='%231C2733'/%3E%3Ccircle cx='2.6' cy='8.6' r='.85' fill='%231C2733'/%3E%3Ccircle cx='4.3' cy='5.6' r='.85' fill='%231C2733'/%3E%3Ccircle cx='7.0' cy='3.3' r='.85' fill='%231C2733'/%3E%3Ccircle cx='10.3' cy='2.2' r='.85' fill='%231C2733'/%3E%3Ccircle cx='13.7' cy='2.2' r='.85' fill='%231C2733'/%3E%3Ccircle cx='17.0' cy='3.3' r='.85' fill='%231C2733'/%3E%3Ccircle cx='19.7' cy='5.6' r='.85' fill='%231C2733'/%3E%3Ccircle cx='21.4' cy='8.6' r='.85' fill='%231C2733'/%3E%3C/svg%3E") center/contain no-repeat;transition:transform .18s ease-out,opacity .18s linear;opacity:.7}
+.q-o label>span::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;background:var(--paper-ink);transform:scaleX(0);transform-origin:left;transition:transform .42s cubic-bezier(.3,.7,.2,1)}
+.q-o small{display:block;margin-top:1px;font-size:15px;font-weight:400;line-height:1.4;color:var(--psoft)}
+.q-o input:checked+span::before{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='10' fill='%23FF8A6C' opacity='.5'/%3E%3Ccircle cx='13.1' cy='12.0' r='1.15' fill='%23F2613C'/%3E%3Ccircle cx='10.6' cy='13.3' r='1.11' fill='%23F2613C'/%3E%3Ccircle cx='12.2' cy='9.5' r='1.09' fill='%23F2613C'/%3E%3Ccircle cx='13.8' cy='14.3' r='1.06' fill='%23F2613C'/%3E%3Ccircle cx='8.7' cy='11.4' r='1.04' fill='%23F2613C'/%3E%3Ccircle cx='15.1' cy='10.0' r='1.03' fill='%23F2613C'/%3E%3Ccircle cx='11.0' cy='15.8' r='1.01' fill='%23F2613C'/%3E%3Ccircle cx='10.0' cy='8.2' r='1.00' fill='%23F2613C'/%3E%3Ccircle cx='16.3' cy='13.6' r='0.98' fill='%23F2613C'/%3E%3Ccircle cx='7.5' cy='13.8' r='0.97' fill='%23F2613C'/%3E%3Ccircle cx='14.1' cy='7.4' r='0.96' fill='%23F2613C'/%3E%3Ccircle cx='13.6' cy='17.1' r='0.94' fill='%23F2613C'/%3E%3Ccircle cx='7.2' cy='9.2' r='0.93' fill='%23F2613C'/%3E%3Ccircle cx='17.6' cy='10.8' r='0.92' fill='%23F2613C'/%3E%3Ccircle cx='8.6' cy='16.9' r='0.91' fill='%23F2613C'/%3E%3Ccircle cx='11.2' cy='5.9' r='0.90' fill='%23F2613C'/%3E%3Ccircle cx='16.9' cy='16.1' r='0.89' fill='%23F2613C'/%3E%3Ccircle cx='5.5' cy='12.3' r='0.88' fill='%23F2613C'/%3E%3Ccircle cx='16.8' cy='7.3' r='0.87' fill='%23F2613C'/%3E%3Ccircle cx='11.7' cy='18.9' r='0.87' fill='%23F2613C'/%3E%3Ccircle cx='7.5' cy='6.6' r='0.86' fill='%23F2613C'/%3E%3Ccircle cx='19.2' cy='13.0' r='0.85' fill='%23F2613C'/%3E%3Ccircle cx='5.9' cy='16.2' r='0.84' fill='%23F2613C'/%3E%3Ccircle cx='13.7' cy='4.6' r='0.83' fill='%23F2613C'/%3E%3Ccircle cx='15.8' cy='18.7' r='0.82' fill='%23F2613C'/%3E%3Ccircle cx='4.5' cy='9.6' r='0.82' fill='%23F2613C'/%3E%3Ccircle cx='19.3' cy='8.6' r='0.81' fill='%23F2613C'/%3E%3Ccircle cx='8.8' cy='19.6' r='0.80' fill='%23F2613C'/%3E%3Ccircle cx='9.2' cy='4.1' r='0.79' fill='%23F2613C'/%3E%3Ccircle cx='19.5' cy='15.9' r='0.79' fill='%23F2613C'/%3E%3Ccircle cx='3.7' cy='14.2' r='0.78' fill='%23F2613C'/%3E%3Ccircle cx='16.7' cy='4.6' r='0.77' fill='%23F2613C'/%3E%3Ccircle cx='13.5' cy='20.8' r='0.77' fill='%23F2613C'/%3E%3Ccircle cx='4.8' cy='6.5' r='0.76' fill='%23F2613C'/%3E%3Ccircle cx='21.1' cy='11.2' r='0.75' fill='%23F2613C'/%3E%3Ccircle cx='5.7' cy='18.8' r='0.75' fill='%23F2613C'/%3E%3Ccircle cx='12.0' cy='2.6' r='0.74' fill='%23F2613C'/%3E%3Ccircle cx='18.4' cy='19.1' r='0.73' fill='%23F2613C'/%3E%3Ccircle cx='2.3' cy='11.1' r='0.73' fill='%23F2613C'/%3E%3Ccircle cx='19.8' cy='6.1' r='0.72' fill='%23F2613C'/%3E%3Ccircle cx='10.2' cy='21.8' r='0.71' fill='%23F2613C'/%3E%3Ccircle cx='6.6' cy='3.5' r='0.71' fill='%23F2613C'/%3E%3Ccircle cx='21.8' cy='14.7' r='0.70' fill='%23F2613C'/%3E%3Ccircle cx='2.8' cy='16.7' r='0.70' fill='%23F2613C'/%3E%3Ccircle cx='15.6' cy='2.2' r='0.69' fill='%23F2613C'/%3E%3Ccircle cx='16.0' cy='21.8' r='0.69' fill='%23F2613C'/%3E%3C/svg%3E");opacity:1;transform:scale(1.16);animation:nball .36s cubic-bezier(.2,1.4,.4,1)}
+.q-o input:checked+span::after{transform:scaleX(1)}
+@keyframes nball{from{transform:scale(.3)}to{transform:scale(1.16)}}
+.q-o input:focus-visible+span{outline:3px solid var(--stamp);outline-offset:2px}
+@media (hover:hover){.q-o label:hover input:not(:checked)+span{transform:translateX(5px)}.q-o label:hover input:not(:checked)+span::before{opacity:1}}
+.q-next{display:none;margin-top:10px;min-height:46px;padding:0 16px;font:inherit;font-size:16px;font-weight:600;color:#F6EFDF;background:var(--paper-ink);border:0;cursor:pointer}
+.q.kb .q-next{display:inline-flex;align-items:center}
+/* 答過的題目收成一行，回話留在它底下；點「改」再打開 */
+.q.done{padding:0}
+.q.done legend{position:absolute;left:0;top:13px;width:auto;padding:0;font-size:15px;font-weight:400;line-height:1.5;color:var(--psoft)}
+.q.done .q-n,.q.done .q-f{display:none}
+.q.done .q-s{display:inline}
+.q.done .q-o,.q.done .q-next{display:none}
+.q.done .q-ch{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;min-height:48px;padding:9px 0 9px 80px;background:none;border:0;font:inherit;font-size:17px;line-height:1.4;font-weight:600;color:var(--paper-ink);text-align:left;cursor:pointer}
+.q-e{flex:none;font-size:15px;font-weight:400;text-decoration:underline;text-underline-offset:4px;color:var(--psoft)}
+.q-said{display:none;padding:0 0 10px 80px;font-size:15px;line-height:1.5;color:var(--psoft);word-break:normal}
+.q.done .q-said:not(:empty){display:block;animation:said .4s ease-out}
+@keyframes said{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+.q-say{padding:10px 0 0;border-top:1px solid rgba(28,39,51,.3);font-size:17px;font-weight:600;line-height:1.5;color:var(--paper-ink);word-break:normal}
+.q-say:empty{padding:0}
+/* 單子：還沒答的地方留淡色虛線，一行一行寫上去，高度一開始就接近寫完的樣子 */
+.sheet{position:relative;margin-top:16px;padding:16px 16px 14px;background:#FBF7EC;border:1px solid rgba(28,39,51,.6);scroll-margin-top:72px;scroll-margin-bottom:72px}
+.s-t{font-size:clamp(26px,7.4vw,30px);line-height:1.2;color:var(--paper-ink);outline-offset:6px}
+.s-top{margin-top:6px;font-size:15px;line-height:1.55;color:var(--psoft);word-break:normal}
+.stamp{position:absolute;right:10px;top:-13px;font-size:15px;background:#FBF7EC;visibility:hidden}
+.sheet.complete .stamp{visibility:visible;animation:stamp .3s ease-out}
+@keyframes stamp{from{transform:rotate(-5deg) scale(1.9);opacity:0}to{transform:rotate(-5deg) scale(1);opacity:1}}
+.s-empty{margin-top:8px;font-weight:600}
+.s-ans{margin:10px 0 0;padding-top:6px;border-top:1px solid rgba(28,39,51,.3)}
+.s-ans>div{display:grid;grid-template-columns:5em minmax(0,1fr);align-items:baseline;padding:2px 0}
+.s-ans dt{font-size:15px;color:var(--psoft)}
+.s-ans dd{margin:0;font-size:17px;font-weight:600;line-height:1.5;word-break:normal}
+.s-row{margin-top:10px;padding-top:8px;border-top:1px solid rgba(28,39,51,.3)}
+.s-row h4{margin:0 0 3px;font-size:15px;font-weight:600;line-height:1.5;color:var(--psoft)}
+.s-row li{position:relative;padding:3px 0 3px 1em;font-size:16px;line-height:1.5;color:var(--paper-ink);word-break:normal;line-break:strict}
+.s-row li::before{content:"・";position:absolute;left:-.1em}
+.s-row li.ph{padding:0}
+.s-row li.ph::before{content:none}
+.ph{display:block;height:9px;margin:9px 0;background:repeating-linear-gradient(90deg,rgba(28,39,51,.28) 0 3px,transparent 3px 8px);width:62%}
+.ph:nth-child(2n){width:44%}
+.ph:nth-child(3n){width:54%}
+.s-ans dd.ph{margin:7px 0}
+.new{animation:write .5s ease-out both;animation-delay:var(--d,0ms)}
+@keyframes write{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 -4% 0 0)}}
+.s-row a{display:inline-flex;align-items:center;min-height:44px;text-underline-offset:4px}
+.s-row li,.s-note,.s-res,.q-said,.q-say,.s-top,.s-send,.s-ans dd{text-wrap:balance}
+.s-row .s-back{position:relative;z-index:1;float:right;margin:-11px 0 -11px 10px;font-size:14px;color:var(--psoft)}
+.s-note{font-size:14px;line-height:1.5;color:var(--psoft);word-break:normal}
+.s-range{font-size:22px;font-weight:600;line-height:1.4}
+/* 工作量：三團不同密度的粒子，選中的那團轉珊瑚色 */
+.scale{display:flex;gap:16px;margin:2px 0 6px}
+.scale i{display:block;font-style:normal;font-size:14px;line-height:1.4;text-align:center;color:var(--psoft)}
+.scale svg{display:block;width:60px;height:44px;color:rgba(28,39,51,.42);transition:color .25s linear}
+.scale i.on{color:var(--paper-ink);font-weight:600}
+.scale i.on svg{color:#F2613C}
+.s-send{margin-top:14px;padding-top:12px;border-top:2px solid var(--paper-ink);font-size:18px;font-weight:600;line-height:1.5;word-break:normal}
+.s-how{display:flex;flex-wrap:wrap;gap:0 14px;margin:6px 0 0;padding:0;list-style:none;counter-reset:how;font-size:15px;line-height:1.6;color:var(--psoft)}
+.s-how li{counter-increment:how}
+.s-how li::before{content:counter(how) ". "}
+[data-act][hidden],[data-done][hidden]{display:none}
+.s-res{font-size:16px;font-weight:600;line-height:1.5;color:var(--paper-ink);word-break:normal}
+.s-res:not(:empty){margin-top:10px}
+.sheet #qLine{margin:0}
+.s-stick{margin-top:6px}
+/* 答完前複製只是一行小字；蓋章那一刻才亮起綠條 */
+.s-btn{display:flex;width:100%;padding:10px 12px;white-space:normal;text-align:center;line-height:1.4;border:0;font-family:inherit;cursor:pointer}
+.sheet:not(.complete) .s-btn,.sheet:not(.complete) .s-btn:hover{display:inline-flex;width:auto;min-height:44px;padding:0;background:none;color:var(--paper-ink);font-size:15px;font-weight:400;text-decoration:underline;text-underline-offset:4px}
+.sheet.complete .s-stick{position:sticky;bottom:0;z-index:1;margin:10px -16px 0;padding:8px 16px calc(8px + env(safe-area-inset-bottom));background:#FBF7EC;border-top:1px solid rgba(28,39,51,.3);animation:ctain .4s ease-out}
+@keyframes ctain{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@media (max-height:480px){.sheet.complete .s-stick{position:static}}
+html.js .bar.show.yield{transform:translateY(110%);visibility:hidden;transition:transform .2s ease-out,visibility 0s .2s}
+#price.sheet-has>.tl{display:none}
+/* 中文不切在詞中間：斷在標點或空白，單一長句才退回任意處 */
+.s-row li,.s-note,.s-res,.q-said,.q-say,.s-top,.s-send,.s-ans dd,.s-btn,.s-how li,.q-in span{word-break:keep-all;overflow-wrap:anywhere}
+@media (max-width:767px){.q.done .q-said{padding-left:0}}
+/* 上下堆疊時，題目與單子之間留一條粒子帶，答題的波在這裡看得到 */
+@media not all and (min-width:960px){.quote .sheet{margin-top:176px}}
+@media (min-width:768px) and (max-height:560px){.quote .sheet{margin-top:0}}
+.s-txt{display:block;width:100%;margin-top:8px;padding:10px;font:inherit;font-size:16px;line-height:1.5;color:var(--paper-ink);background:#fff;border:1px solid rgba(28,39,51,.6);border-radius:0;resize:vertical}
+.s-txt[hidden],.s-act[hidden],.tl[hidden]{display:none}
+.q-re{display:block;margin-top:4px;min-height:44px;padding:0;background:none;border:0;font:inherit;font-size:15px;color:var(--psoft);text-decoration:underline;text-underline-offset:4px;cursor:pointer}
+.line-paste{margin:0 0 10px;font-weight:600}
+.line-paste[hidden]{display:none}
+#linePanel.pasting .copy{display:none}
+@media (prefers-reduced-motion:reduce){.sheet.complete .stamp,.new,.q-o input:checked+span::before,.q.done .q-said:not(:empty),.sheet.complete .s-stick{animation:none}.q-o label>span,.q-o label>span::before,.q-o label>span::after,.nd,html.needs-on #needsL{transition:none}.q-o input:checked+span::before{transform:scale(1.16)}}
+@media (min-width:768px){.q legend{font-size:23px}.q-o label>span{font-size:23px}.s-row li{font-size:17px}}
+@media (min-width:960px),(min-width:768px) and (max-height:560px){
+  #price>h2{grid-row:1}
+  #price>.lead{grid-row:1}
+  #price>.hq{grid-column:1/6;grid-row:2;align-self:start;justify-self:start;margin:6px 0 0 4px;font-size:24px;padding:3px 14px}
+  #price>.price3{grid-row:2;margin-top:18px}
+  #price .quote{grid-column:1/13;grid-row:3;display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:0 clamp(28px,4vw,64px);align-items:start;margin-top:48px}
+  #price>.tl{grid-column:1/13;grid-row:4;justify-self:start}
+  .sheet{margin-top:0;padding:20px 22px 16px}
+  .sheet.complete .s-stick{margin-left:-22px;margin-right:-22px;padding-left:22px;padding-right:22px}
+  .s-t{font-size:36px}
+  .s-2{columns:2;column-gap:20px}
+  .s-2 li{break-inside:avoid}
+  .stamp{right:18px;font-size:17px}
+}
+@media (min-width:960px) and (min-height:800px){.q-l{position:sticky;top:84px}}
+html.needs-on.needs-live.gl-lost #needsL,html.needs-on.needs-live.no-gl #needsL{opacity:1;pointer-events:auto}

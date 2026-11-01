@@ -9,6 +9,8 @@ SHAPE_ORDER.forEach(function(s,i){SHAPE_IDX[s]=i});
 /* 半寬半高：用來把形狀塞進插槽 */
 var EXT={grid:[3.4,2.2],glyph:[1,1],crack:[.56,1.08],fixed:[.56,1.08],app:[.56,1.08],ledger:[1.15,.87],ticker:[1.5,1.05],lock:[1.72,1.12],bubble:[1.14,1.05],window:[1.22,.82],loop:[1.1,1.1],bulb:[.74,1.08],needs:[1.56,1.14]};
 var NEEDS=[[-1.02,.72,.34],[.5,.86,.27],[1.16,.12,.36],[-.3,.02,.44],[-1.2,-.56,.28],[.52,-.74,.34]];
+/* 窄螢幕：兩欄三列，每顆球正下方留一行標籤；欄距剛好放得下兩個標籤，行距放得下球加標籤 */
+var NEEDS_N=[[-.68,1.2,.27],[.66,1.02,.24],[.68,.04,.27],[-.64,.22,.3],[-.68,-.76,.24],[.64,-.94,.26]];
 var WORLD={
  hero:{bg:'#08181B',far:'#1B8F98',lit:'#FFF6E2',acc:'#FF6A48',amb:'#3E9AA3',dot:'#FF5A3C',g:2},
  stuck:{bg:'#0A1C22',far:'#238E96',lit:'#E8F8F4',acc:'#FF5A3C',amb:'#3E9AA3',dot:'#FF5A3C',g:1.35},
@@ -24,7 +26,8 @@ Object.keys(WORLD).forEach(function(k){var w=WORLD[k];w.bgc=hex(w.bg);w.farc=hex
 var C=RA.C={NEEDS:NEEDS,SHAPE_ORDER:SHAPE_ORDER,SHAPE_IDX:SHAPE_IDX,EXT:EXT,WORLD:WORLD,INK:hex('#1C2733'),STAMP:hex('#B5332A'),
   ST:[],rects:[],vw:0,vh:0,asp:1,SPLIT:'(min-width:960px),(min-width:768px) and (max-height:560px)',MOBILE:true,MW:200,F:1/Math.tan(21*Math.PI/180),CAMZ:6.2,
   rectArr:new Float32Array(24),rectDim:new Float32Array(6),
-  pick:{stage:-1,from:0,to:0,t:1},onPick:function(){}};
+  pick:{stage:-1,from:0,to:0,t:1},onPick:function(){},
+  setNeedsNarrow:function(n){C.NEEDS=n?NEEDS_N:NEEDS;EXT.needs=n?[1.2,1.5]:[1.56,1.14]}};
 C.halfH=C.CAMZ/C.F;
 
 function nums(s){return (s||'').split(',').map(Number)}
@@ -36,7 +39,7 @@ C.measure=function(){
   C.ST=$$('[data-stage]').map(function(e,i){
     var r=e.getBoundingClientRect(),sl=e.querySelector('.slot'),sr=sl?sl.getBoundingClientRect():null;
     var st={el:e,id:e.id,top:r.top+sy,bottom:r.bottom+sy,shape:(old[i]&&old[i].id===e.id&&old[i].shape)||RA.picked[e.id]||e.getAttribute('data-shape'),world:WORLD[e.getAttribute('data-world')],cfg:nums(e.getAttribute(mob?'data-m':'data-d')),
-      wave:parseFloat(e.getAttribute('data-wave')||0),dim:parseFloat(e.getAttribute('data-dimp')||1),fix:e.hasAttribute('data-fix'),mw:e.hasAttribute('data-merge')?C.MW*1.8:C.MW};
+      wave:parseFloat((mob&&e.getAttribute('data-wavem'))||e.getAttribute('data-wave')||0),dim:parseFloat((mob&&e.getAttribute('data-dimpm'))||e.getAttribute('data-dimp')||1),fix:e.hasAttribute('data-fix'),px:e.hasAttribute('data-px')?parseFloat(e.getAttribute('data-px')):.6,mw:e.hasAttribute('data-merge')?C.MW*1.8:C.MW};
     if(sr&&sr.height>0){st.st=sr.top+sy;st.sh=sr.height;st.sw=sr.width;st.sx=sr.left+sr.width/2}
     var anchor=(mob&&sr&&sr.height>0)?st.st:st.top;
     st.start=i===0?-1e9:anchor-vh*(mob?.74:.6);
@@ -51,8 +54,8 @@ C.measure=function(){
         if(h2)st.start=Math.min(st.start,h2.getBoundingClientRect().top+sy-vh-C.MW-8);
       }
     }
-    /* 合成要被看見：從上一個插槽還在畫面中段就開始，不躲到屏外 */
-    if(mob&&e.hasAttribute('data-merge')&&prev.st!==undefined)st.start=prev.st-vh*.3;
+    /* 合成要被看見，也要等說明文字捲過視窗中央、標籤點得到之後才走 */
+    if(mob&&e.hasAttribute('data-merge')&&prev.st!==undefined)st.start=prev.st+prev.sh-vh*.5-st.mw*.25+30;
     if(prev&&i>1)st.start=Math.max(st.start,prev.start+C.MW+1);
     prev=st;
     return st;
@@ -60,12 +63,15 @@ C.measure=function(){
   C.rects=$$('[data-dim]').map(function(e){
     /* 只有字塊用 Range 量到緊貼文字；容器用外框，免得逼收合內容排版 */
     var b;if(/^(P|H1|H2)$/.test(e.tagName)){var rg=document.createRange();rg.selectNodeContents(e);b=rg.getBoundingClientRect()}else b=e.getBoundingClientRect();
-    return{cx:b.left+b.width/2,cy:b.top+sy+b.height/2,hw:b.width/2+6,hh:b.height/2+6,d:parseFloat(e.getAttribute('data-dim')),e:e};
+    return{cx:b.left+b.width/2,cy:b.top+sy+b.height/2,hw:b.width/2+6,hh:b.height/2+6,d:parseFloat((mob&&e.getAttribute('data-dim-m'))||e.getAttribute('data-dim')),e:e,live:e.hasAttribute('data-dim-live'),lo:b.top+sy-vh*2,hi:e.parentNode.getBoundingClientRect().bottom+sy+vh};
   }).filter(function(r){return r.hw>7});
 };
 C.fillRects=function(y){
   var k=0,i,a=C.rectArr,d=C.rectDim,rs=C.rects,vh=C.vh;
-  for(i=0;i<rs.length&&k<6;i++){var r=rs[i],cy=r.cy-y;if(cy+r.hh<-70||cy-r.hh>vh+70)continue;a[k*4]=r.cx;a[k*4+1]=cy;a[k*4+2]=r.hw;a[k*4+3]=r.hh;d[k]=r.d;k++}
+  for(i=0;i<rs.length&&k<6;i++){var r=rs[i],cy=r.cy-y;
+    /* 黏住的區塊位置跟著捲動變，在工具附近才每幀問；只有它一個，不貴 */
+    if(r.live&&y>r.lo&&y<r.hi){var bl=r.e.getBoundingClientRect();cy=bl.top+bl.height/2;r.hh=bl.height/2+6}
+    if(cy+r.hh<-70||cy-r.hh>vh+70)continue;a[k*4]=r.cx;a[k*4+1]=cy;a[k*4+2]=r.hw;a[k*4+3]=r.hh;d[k]=r.d;k++}
   for(;k<6;k++){a[k*4]=-9999;a[k*4+1]=-9999;a[k*4+2]=0;a[k*4+3]=0;d[k]=1}
 };
 /* 捲動位置換成「第幾段＋過場進度」：無狀態，倒捲對稱 */
